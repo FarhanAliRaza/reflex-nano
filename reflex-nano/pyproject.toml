@@ -1,0 +1,22 @@
+[build-system]
+requires = ["maturin==1.15.0"]
+build-backend = "maturin"
+
+[project]
+name = "reflex-nano"
+version = "0.4.0"
+description = "A small Rust-owned reactive UI framework with Python and Rust APIs"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+
+[project.scripts]
+nano = "reflex_nano.__main__:main"
+
+[tool.maturin]
+manifest-path = "crates/nano-python/Cargo.toml"
+python-source = "python"
+module-name = "reflex_nano._native"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
