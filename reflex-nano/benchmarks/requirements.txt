@@ -1,0 +1,6 @@
+reflex==0.9.11
+reflex-base==0.9.11
+aiohttp==3.12.15
+granian==2.8.3
+websockets==15.0.1
+python-socketio==5.17.0

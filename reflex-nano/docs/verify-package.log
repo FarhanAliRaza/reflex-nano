@@ -1,0 +1,25 @@
+Using CPython 3.12.14 interpreter at: /workspace/scratch/ec6b9a5f445e/.venv/bin/python
+Creating virtual environment at: /tmp/nano-wheel-check-2_th_w01/venv
+Using Python 3.12.14 environment at: /tmp/nano-wheel-check-2_th_w01/venv
+Resolved 1 package in 1ms
+Installed 1 package in 2ms
+ + reflex-nano==0.4.0 (from file:///workspace/scratch/ec6b9a5f445e/reflex-nano/dist/reflex_nano-0.4.0-cp312-cp312-manylinux_2_34_x86_64.whl)
+{
+  "version": "0.4.0",
+  "clean_wheel_install": true,
+  "runtime_contract": [
+    "initial state",
+    "sync and async events",
+    "computed values",
+    "controlled input",
+    "form payload",
+    "nested list mutation",
+    "generator checkpoints delivered before completion",
+    "background push with foreground events",
+    "returned event chain",
+    "reconnect state retained",
+    "session isolation"
+  ],
+  "python_dependencies_required": [],
+  "native_api_passed": true
+}

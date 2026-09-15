@@ -1,0 +1,11 @@
+{
+  "frontend/react.jsx": "07e38220c7d7d44a01dc02cc1a9ebb3b101ca33c8c7c80261268e7d82bbfda54",
+  "frontend/components.js": "a87be4ffcc9f0252a266bf18bce623dab08943702dcf7a39d0c130dc6e0e25f8",
+  "frontend/components-registry.js": "b3876fa4900d8257c996c1b114ebc73eab5ab0f0f6c7a1aa0d0570adfe882a93",
+  "frontend/custom.js": "c64c45f914a050af6ffb0f5878e920c3cdfa72d6ac95d51a9b79744c6d79335d",
+  "frontend/build.mjs": "ea6eabd06c984f5fc49bac47a08efc3f4f374192a0d295671e8dd40513fb335e",
+  "frontend/package.json": "1239d4d885dcad42201a27ed9324f8f0f760b78700d8db9ced39a511cffe7eae",
+  "package.json": "4ab3453b4aaf35f9ebe4b545874e58b96159f9a9c09788c8b94c5513284ec2f6",
+  "crates/nano-core/src/client.js": "84c4ca995cedf6c952286131906c80bd10ad6088802a54b43cd2fc9efba0dd83",
+  "package-lock.json": "b5aff0945ffe274b42c119f810b8984e548672f31aac478883411f59c74990a7"
+}

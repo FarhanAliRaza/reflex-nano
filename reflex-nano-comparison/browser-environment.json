@@ -1,0 +1,10 @@
+{
+  "node": "v24.19.0",
+  "playwright": "1.62.1",
+  "chromium": "133.0.6943.0",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "memory": "retained V8 heap after forced GC; server Linux smaps_rollup"
+}

@@ -1,0 +1,32 @@
+{
+  "version": "0.4.0",
+  "command": [
+    "npm",
+    "run",
+    "build:frontend"
+  ],
+  "runs": [
+    {
+      "run": 0,
+      "seconds": 0.9011999540016404
+    },
+    {
+      "run": 1,
+      "seconds": 0.6169832409941591
+    },
+    {
+      "run": 2,
+      "seconds": 0.5673238039962598
+    }
+  ],
+  "dependency_installation_excluded": true,
+  "byte_identical_to_tested_embedded_assets": true,
+  "sha256": {
+    "components-7CdcbHJ9.css": "bf09c7832cd1171a8b74413c223a31c476dd037da67f12f00bb0cef2dfd38a03",
+    "components-DpRbI6sD.js": "09b4a02a3bff5242fbe33961842bdb8a59b1831dc9d082806bcb482a2c01ea2e",
+    "react.js": "a86b94b460e774ce3916c5e9dbf4d610c317abef5be823a2ce563b98c90b12f6",
+    "registry.json": "081b84925dd64ac235c2e8f70bcce48a999d29550edf1603ef8898a9abb5f155",
+    "sources.json": "2644bfeed0239e34b1e330d21756ae287d2996c703bb94c333092ea2fa15c825",
+    ".vite/license.md": "332d574ce5df07470c322250260246825836af3366d7d954e56d37b0cecdcf12"
+  }
+}

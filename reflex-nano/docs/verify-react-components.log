@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "react": "19.2.8",
+  "browser": "133.0.6943.0",
+  "checks": [
+    "HTML route downloads no React",
+    "Renderer transition retains Rust session",
+    "Radix Button, TextField, controlled Switch and Select",
+    "Controlled Dialog and Rust callback from portal outside root",
+    "Custom React hooks survive Rust state updates",
+    "Reload retains native state; native HTML fallback route"
+  ],
+  "errors": [],
+  "stats": {
+    "renderer": "react",
+    "reactVersion": "19.2.8",
+    "hydration": "hydrateRoot",
+    "commits": 1,
+    "visited": 28,
+    "skipped": 0,
+    "recoverableErrors": [],
+    "errors": []
+  }
+}

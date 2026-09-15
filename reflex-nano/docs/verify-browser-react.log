@@ -1,0 +1,50 @@
+Reflex Nano → http://127.0.0.1:3311
+Reflex Nano → http://127.0.0.1:3310
+{
+  "passed": true,
+  "renderer": "react",
+  "browser": "133.0.6943.0",
+  "checks": [
+    {
+      "host": "Python bindings",
+      "passed": [
+        "WebSocket transport without HTTP event requests",
+        "sync and deferred Rust events",
+        "computed values and conditionals",
+        "controlled inputs, focus and selection",
+        "form validation and rollback",
+        "keyed list identity and nested mutation",
+        "dynamic routes, history and refresh",
+        "session isolation and escaping",
+        "expression parity",
+        "background push and streaming",
+        "server-side event chains",
+        "reconnect state retention",
+        "cross-route tab synchronization",
+        "concurrent same-session events",
+        "desktop and mobile layout"
+      ]
+    },
+    {
+      "host": "Rust executable",
+      "passed": [
+        "WebSocket transport without HTTP event requests",
+        "sync and deferred Rust events",
+        "computed values and conditionals",
+        "controlled inputs, focus and selection",
+        "form validation and rollback",
+        "keyed list identity and nested mutation",
+        "dynamic routes, history and refresh",
+        "session isolation and escaping",
+        "expression parity",
+        "background push and streaming",
+        "server-side event chains",
+        "reconnect state retention",
+        "cross-route tab synchronization",
+        "concurrent same-session events",
+        "desktop and mobile layout"
+      ]
+    }
+  ],
+  "page_errors": []
+}

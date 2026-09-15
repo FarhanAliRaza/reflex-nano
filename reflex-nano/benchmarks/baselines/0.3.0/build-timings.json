@@ -1,0 +1,94 @@
+{
+  "version": "0.3.0",
+  "date_utc": "2026-09-15T10:10:23Z",
+  "rustc": "rustc 1.97.0 (2d8144b78 2026-07-07)",
+  "target_was_empty": true,
+  "jobs": 1,
+  "network": "offline",
+  "profile": "release; thin LTO; one codegen unit",
+  "excluded": [
+    "toolchain installation",
+    "registry downloads",
+    "OS filesystem cache flush"
+  ],
+  "runs": [
+    {
+      "stage": "clean-native",
+      "command": [
+        "cargo",
+        "build",
+        "--release",
+        "--locked",
+        "--offline",
+        "-j",
+        "1",
+        "-p",
+        "reflex-nano",
+        "--example",
+        "runner"
+      ],
+      "seconds": 79.685091541,
+      "returncode": 0
+    },
+    {
+      "stage": "cached-native",
+      "command": [
+        "cargo",
+        "build",
+        "--release",
+        "--locked",
+        "--offline",
+        "-j",
+        "1",
+        "-p",
+        "reflex-nano",
+        "--example",
+        "runner"
+      ],
+      "seconds": 0.066717077,
+      "returncode": 0
+    },
+    {
+      "stage": "python-wheel-after-native",
+      "command": [
+        "/workspace/scratch/ec6b9a5f445e/reflex-nano/../.venv/bin/maturin",
+        "build",
+        "--release",
+        "--locked",
+        "--offline",
+        "-j",
+        "1",
+        "--compatibility",
+        "manylinux_2_34",
+        "--interpreter",
+        "/workspace/scratch/ec6b9a5f445e/reflex-nano/../.venv/bin/python",
+        "--out",
+        "/workspace/scratch/ec6b9a5f445e/reflex-nano/dist"
+      ],
+      "seconds": 39.309460947,
+      "returncode": 0
+    }
+  ],
+  "target_directory": "/tmp/nano-build-i1_nafi2",
+  "sha256": {
+    "dist/nano": "5946fe18708f0851773298976ad6a583372d26275d5a354bf3f1e4338339ac2a",
+    "Cargo.lock": "30aa81717c5c6593d452388a4443def7e12b110609b57e7ebfb92167e4e850e3",
+    "Cargo.toml": "477be062a22fecea012499082bfa08b8ea998cbcfca6954d86c64ef8061d8411",
+    "rust-toolchain.toml": "e1e35601df56bce6ac4edfc8f7b1abeed0a5b931f1c6f5d157b1433b6875f6aa",
+    "dist/reflex_nano-0.3.0-cp312-cp312-manylinux_2_34_x86_64.whl": "99156c5d62d5ae529034cfe12a1f87736c416c976e8d72b53504ad8fac481c04",
+    "crates/nano-core/build.rs": "7e7b35f3318cc396a21c56f50e030a9e18a653e3a25500edf45a55e679218eda",
+    "crates/nano-core/src/demo.rs": "e01502f9a7572fc2bca865dae241ca447a653cb845d0d5b38b36990eacf398ae",
+    "crates/nano-core/src/model.rs": "2840b33cafdd3f2c3486d1b5bb02f1f26349a68e7aa092eb4e731ba9d7245391",
+    "crates/nano-core/src/assets.rs": "bfa37c20db9c1994a2059fa124a62013c447c09a05d252435f155b79adfe3307",
+    "crates/nano-core/src/lib.rs": "fc39f969b6f3a0ed724b53afe538e1fd7855643a29ab6ce254d4024e5c729084",
+    "crates/nano-core/src/state.rs": "21d4c1bea88ac331a2ecf861b47491a3d2b6156e54157395abbc834295bc071f",
+    "crates/nano-core/src/websocket.rs": "45c82ad3568dc13fb0a9eeb6ab3b0d8f6e089e7c0425de5adc31c8f77b7ebb95",
+    "crates/nano-core/src/tests.rs": "be6ff110cfb7ac79e621340b06a104c2a98eab2312bf611807dc9356469b7e12",
+    "crates/nano-core/src/runtime.rs": "2f38ac9341420e1116f5843ae7a8a6a770ff9f9cab05e79ad843119eb0c52a84",
+    "crates/nano-core/src/server.rs": "1621a17e4903ae701a6f266a080b3ae713c0d64c24b139bb98664e4520dfffa3",
+    "crates/nano-core/src/render.rs": "4c30dd2f1d7e4446504f277bfb7e78122e5bc664fc3ec39e788545ff046f57bd",
+    "crates/nano-python/src/lib.rs": "fb9ed0c2544ff05a6ed6451501eeabe178a9dab8aba56bcd498392b2e805afe5",
+    "crates/nano-core/src/client.js": "abad7f67338b0b24c07c386ea9fcf9abc738d7d9e738d557e2f8b3fe14acc0a3"
+  },
+  "completed": true
+}

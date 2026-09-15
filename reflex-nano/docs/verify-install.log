@@ -1,0 +1,6 @@
+Using Python 3.12.14 environment at: /workspace/scratch/ec6b9a5f445e/.venv
+Resolved 1 package in 1ms
+Prepared 1 package in 15ms
+Uninstalled 1 package in 0.60ms
+Installed 1 package in 1ms
+ ~ reflex-nano==0.4.0 (from file:///workspace/scratch/ec6b9a5f445e/reflex-nano/dist/reflex_nano-0.4.0-cp312-cp312-manylinux_2_34_x86_64.whl)

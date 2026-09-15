@@ -1,0 +1,5 @@
+# Preserve the exact release and measured harness bytes on every platform.
+# Benchmark provenance and SHA256SUMS depend on their original line endings.
+reflex-nano/** -text
+reflex-nano-comparison/** -text
+recovered/** -text

@@ -1,0 +1,313 @@
+[
+  {
+    "name": "integer addition",
+    "expression": {
+      "op": "binary",
+      "operator": "eq",
+      "left": {
+        "op": "binary",
+        "operator": "add",
+        "left": {
+          "op": "literal",
+          "value": 1
+        },
+        "right": {
+          "op": "literal",
+          "value": 1
+        }
+      },
+      "right": {
+        "op": "literal",
+        "value": 2
+      }
+    },
+    "state": {},
+    "expected": true
+  },
+  {
+    "name": "numeric structural equality",
+    "expression": {
+      "op": "binary",
+      "operator": "eq",
+      "left": {
+        "op": "literal",
+        "value": {
+          "x": [
+            1
+          ]
+        }
+      },
+      "right": {
+        "op": "literal",
+        "value": {
+          "x": [
+            1.0
+          ]
+        }
+      }
+    },
+    "state": {},
+    "expected": true
+  },
+  {
+    "name": "Unicode length",
+    "expression": {
+      "op": "length",
+      "value": {
+        "op": "literal",
+        "value": "\ud83e\udd80\u0633\u0644\u0627\u0645"
+      }
+    },
+    "state": {},
+    "expected": 5
+  },
+  {
+    "name": "empty array truth",
+    "expression": {
+      "op": "select",
+      "condition": {
+        "op": "literal",
+        "value": []
+      },
+      "yes": {
+        "op": "literal",
+        "value": "yes"
+      },
+      "no": {
+        "op": "literal",
+        "value": "no"
+      }
+    },
+    "state": {},
+    "expected": "no"
+  },
+  {
+    "name": "empty object truth",
+    "expression": {
+      "op": "select",
+      "condition": {
+        "op": "literal",
+        "value": {}
+      },
+      "yes": {
+        "op": "literal",
+        "value": "yes"
+      },
+      "no": {
+        "op": "literal",
+        "value": "no"
+      }
+    },
+    "state": {},
+    "expected": "no"
+  },
+  {
+    "name": "division by zero",
+    "expression": {
+      "op": "binary",
+      "operator": "div",
+      "left": {
+        "op": "literal",
+        "value": 3
+      },
+      "right": {
+        "op": "literal",
+        "value": 0
+      }
+    },
+    "state": {},
+    "expected": null
+  },
+  {
+    "name": "missing key",
+    "expression": {
+      "op": "get",
+      "value": {
+        "op": "literal",
+        "value": {}
+      },
+      "key": {
+        "op": "literal",
+        "value": "x"
+      }
+    },
+    "state": {},
+    "expected": null
+  },
+  {
+    "name": "list indexing",
+    "expression": {
+      "op": "get",
+      "value": {
+        "op": "literal",
+        "value": [
+          3,
+          4
+        ]
+      },
+      "key": {
+        "op": "literal",
+        "value": 1
+      }
+    },
+    "state": {},
+    "expected": 4
+  },
+  {
+    "name": "string concat",
+    "expression": {
+      "op": "concat",
+      "parts": [
+        {
+          "op": "literal",
+          "value": "Count: "
+        },
+        {
+          "op": "literal",
+          "value": 5
+        }
+      ]
+    },
+    "state": {},
+    "expected": "Count: 5"
+  },
+  {
+    "name": "dynamic conditional",
+    "expression": {
+      "op": "select",
+      "condition": {
+        "op": "binary",
+        "operator": "gt",
+        "left": {
+          "op": "state",
+          "name": "n"
+        },
+        "right": {
+          "op": "literal",
+          "value": 0
+        }
+      },
+      "yes": {
+        "op": "literal",
+        "value": "yes"
+      },
+      "no": {
+        "op": "literal",
+        "value": "no"
+      }
+    },
+    "state": {
+      "n": 3
+    },
+    "expected": "yes"
+  },
+  {
+    "name": "boolean logic",
+    "expression": {
+      "op": "binary",
+      "operator": "or",
+      "left": {
+        "op": "binary",
+        "operator": "and",
+        "left": {
+          "op": "literal",
+          "value": true
+        },
+        "right": {
+          "op": "literal",
+          "value": false
+        }
+      },
+      "right": {
+        "op": "literal",
+        "value": true
+      }
+    },
+    "state": {},
+    "expected": true
+  },
+  {
+    "name": "negative modulo",
+    "expression": {
+      "op": "binary",
+      "operator": "mod",
+      "left": {
+        "op": "literal",
+        "value": -5
+      },
+      "right": {
+        "op": "literal",
+        "value": 2
+      }
+    },
+    "state": {},
+    "expected": -1.0
+  },
+  {
+    "name": "trim text",
+    "expression": {
+      "op": "trim",
+      "value": {
+        "op": "literal",
+        "value": "  Nano  "
+      }
+    },
+    "state": {},
+    "expected": "Nano"
+  },
+  {
+    "name": "native object expression",
+    "expression": {
+      "op": "object",
+      "fields": {
+        "answer": {
+          "op": "literal",
+          "value": 42
+        }
+      }
+    },
+    "state": {},
+    "expected": {
+      "answer": 42
+    }
+  },
+  {
+    "name": "count expression",
+    "expression": {
+      "op": "count",
+      "items": {
+        "op": "state",
+        "name": "items"
+      },
+      "name": "row",
+      "predicate": {
+        "op": "not",
+        "value": {
+          "op": "get",
+          "value": {
+            "op": "local",
+            "name": "row"
+          },
+          "key": {
+            "op": "literal",
+            "value": "done"
+          }
+        }
+      }
+    },
+    "state": {
+      "items": [
+        {
+          "done": true
+        },
+        {
+          "done": false
+        },
+        {
+          "done": false
+        }
+      ]
+    },
+    "expected": 2
+  }
+]

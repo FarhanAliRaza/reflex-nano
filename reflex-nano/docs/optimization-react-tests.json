@@ -1,0 +1,34 @@
+{
+  "passed": true,
+  "renderer": "react",
+  "browser": "133.0.6943.0",
+  "checks": [
+    "SSR element identity, adjacent/empty text, early input, constant folding, nested lexical scopes",
+    "Dependency boundaries skip unrelated rows and activate empty conditional fragments",
+    "Keyed reorder keeps DOM nodes, focus, selection and refreshes event index scopes",
+    "List removal/restoration and nested list replacement",
+    "Debounce final arguments, leading throttle without trailing replay, temporal discard, propagation",
+    "Rehydration retains authoritative state and event bindings"
+  ],
+  "initial_stats": {
+    "renderer": "react",
+    "reactVersion": "19.2.8",
+    "hydration": "hydrateRoot",
+    "commits": 1,
+    "visited": 44,
+    "skipped": 0,
+    "recoverableErrors": [],
+    "errors": []
+  },
+  "counter_update_stats": {
+    "renderer": "react",
+    "reactVersion": "19.2.8",
+    "hydration": "hydrateRoot",
+    "commits": 2,
+    "visited": 51,
+    "skipped": 16,
+    "recoverableErrors": [],
+    "errors": []
+  },
+  "page_errors": []
+}

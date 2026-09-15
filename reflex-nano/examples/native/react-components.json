@@ -1,0 +1,1050 @@
+{
+  "renderer": "react",
+  "schema": {
+    "fields": {
+      "checked": {
+        "kind": "bool",
+        "initial": false
+      },
+      "choice": {
+        "kind": "string",
+        "initial": "one"
+      },
+      "count": {
+        "kind": "int",
+        "initial": 0
+      },
+      "name": {
+        "kind": "string",
+        "initial": "Nano"
+      },
+      "open": {
+        "kind": "bool",
+        "initial": false
+      }
+    },
+    "computed": {
+      "doubled": {
+        "op": "binary",
+        "operator": "mul",
+        "left": {
+          "op": "state",
+          "name": "count"
+        },
+        "right": {
+          "op": "literal",
+          "value": 2
+        }
+      }
+    },
+    "events": {
+      "increment": {
+        "parameters": [],
+        "actions": [
+          {
+            "op": "set",
+            "field": "count",
+            "path": [],
+            "value": {
+              "op": "binary",
+              "operator": "add",
+              "left": {
+                "op": "state",
+                "name": "count"
+              },
+              "right": {
+                "op": "literal",
+                "value": 1
+              }
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "set_checked": {
+        "parameters": [
+          {
+            "name": "value",
+            "kind": "bool"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "checked",
+            "path": [],
+            "value": {
+              "op": "local",
+              "name": "value"
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "set_choice": {
+        "parameters": [
+          {
+            "name": "value",
+            "kind": "string"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "choice",
+            "path": [],
+            "value": {
+              "op": "local",
+              "name": "value"
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "set_count": {
+        "parameters": [
+          {
+            "name": "value",
+            "kind": "int"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "count",
+            "path": [],
+            "value": {
+              "op": "local",
+              "name": "value"
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "set_name": {
+        "parameters": [
+          {
+            "name": "value",
+            "kind": "string"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "name",
+            "path": [],
+            "value": {
+              "op": "local",
+              "name": "value"
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "set_open": {
+        "parameters": [
+          {
+            "name": "value",
+            "kind": "bool"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "open",
+            "path": [],
+            "value": {
+              "op": "local",
+              "name": "value"
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      }
+    }
+  },
+  "pages": [
+    {
+      "route": "/",
+      "title": "Direct HTML",
+      "tree": {
+        "kind": "element",
+        "tag": "main",
+        "attrs": {},
+        "styles": {},
+        "events": {},
+        "children": [
+          {
+            "kind": "element",
+            "tag": "h1",
+            "attrs": {},
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "Direct HTML + Rust"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "p",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "count"
+              }
+            },
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "state",
+                  "name": "count"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "button",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "increment"
+              }
+            },
+            "styles": {},
+            "events": {
+              "click": {
+                "name": "increment",
+                "args": [],
+                "prevent_default": false
+              }
+            },
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "Increment"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "a",
+            "attrs": {
+              "href": {
+                "op": "literal",
+                "value": "/widgets"
+              },
+              "id": {
+                "op": "literal",
+                "value": "to-widgets"
+              }
+            },
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "React widgets"
+                }
+              }
+            ],
+            "key": null
+          }
+        ],
+        "key": null
+      },
+      "renderer": "html"
+    },
+    {
+      "route": "/widgets",
+      "title": "React widgets",
+      "tree": {
+        "kind": "component",
+        "library": "@radix-ui/themes",
+        "export_name": "Theme",
+        "attrs": {},
+        "styles": {},
+        "events": {},
+        "children": [
+          {
+            "kind": "component",
+            "library": "@radix-ui/themes",
+            "export_name": "Flex",
+            "attrs": {
+              "direction": {
+                "op": "literal",
+                "value": "column"
+              },
+              "gap": {
+                "op": "literal",
+                "value": "3"
+              }
+            },
+            "styles": {
+              "padding": {
+                "op": "literal",
+                "value": "24px"
+              }
+            },
+            "events": {},
+            "children": [
+              {
+                "kind": "component",
+                "library": "@radix-ui/themes",
+                "export_name": "Heading",
+                "attrs": {},
+                "styles": {},
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "literal",
+                      "value": "React components + Rust state"
+                    }
+                  }
+                ],
+                "key": null,
+                "fallback": null
+              },
+              {
+                "kind": "component",
+                "library": "@radix-ui/themes",
+                "export_name": "Text",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "count"
+                  }
+                },
+                "styles": {},
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "state",
+                      "name": "count"
+                    }
+                  }
+                ],
+                "key": null,
+                "fallback": null
+              },
+              {
+                "kind": "component",
+                "library": "@radix-ui/themes",
+                "export_name": "Text",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "doubled"
+                  }
+                },
+                "styles": {},
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "state",
+                      "name": "doubled"
+                    }
+                  }
+                ],
+                "key": null,
+                "fallback": null
+              },
+              {
+                "kind": "component",
+                "library": "@radix-ui/themes",
+                "export_name": "Button",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "increment"
+                  }
+                },
+                "styles": {},
+                "events": {
+                  "click": {
+                    "name": "increment",
+                    "args": [],
+                    "prevent_default": false
+                  }
+                },
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "literal",
+                      "value": "Increment"
+                    }
+                  }
+                ],
+                "key": null,
+                "fallback": null
+              },
+              {
+                "kind": "component",
+                "library": "@radix-ui/themes",
+                "export_name": "TextField.Root",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "name"
+                  },
+                  "value": {
+                    "op": "state",
+                    "name": "name"
+                  }
+                },
+                "styles": {},
+                "events": {
+                  "change": {
+                    "name": "set_name",
+                    "args": [
+                      {
+                        "op": "get",
+                        "value": {
+                          "op": "local",
+                          "name": "event"
+                        },
+                        "key": {
+                          "op": "literal",
+                          "value": "value"
+                        }
+                      }
+                    ],
+                    "prevent_default": false
+                  }
+                },
+                "children": [],
+                "key": null,
+                "fallback": null
+              },
+              {
+                "kind": "component",
+                "library": "@radix-ui/themes",
+                "export_name": "Text",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "name-value"
+                  }
+                },
+                "styles": {},
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "state",
+                      "name": "name"
+                    }
+                  }
+                ],
+                "key": null,
+                "fallback": null
+              },
+              {
+                "kind": "component",
+                "library": "@radix-ui/themes",
+                "export_name": "Switch",
+                "attrs": {
+                  "checked": {
+                    "op": "state",
+                    "name": "checked"
+                  },
+                  "id": {
+                    "op": "literal",
+                    "value": "native-switch"
+                  }
+                },
+                "styles": {},
+                "events": {
+                  "checked_change": {
+                    "name": "set_checked",
+                    "args": [
+                      {
+                        "op": "get",
+                        "value": {
+                          "op": "local",
+                          "name": "event"
+                        },
+                        "key": {
+                          "op": "literal",
+                          "value": "value"
+                        }
+                      }
+                    ],
+                    "prevent_default": false
+                  }
+                },
+                "children": [],
+                "key": null,
+                "fallback": null
+              },
+              {
+                "kind": "component",
+                "library": "@radix-ui/themes",
+                "export_name": "Text",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "checked-value"
+                  }
+                },
+                "styles": {},
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "select",
+                      "condition": {
+                        "op": "state",
+                        "name": "checked"
+                      },
+                      "yes": {
+                        "op": "literal",
+                        "value": "on"
+                      },
+                      "no": {
+                        "op": "literal",
+                        "value": "off"
+                      }
+                    }
+                  }
+                ],
+                "key": null,
+                "fallback": null
+              },
+              {
+                "kind": "component",
+                "library": "@radix-ui/themes",
+                "export_name": "Select.Root",
+                "attrs": {
+                  "value": {
+                    "op": "state",
+                    "name": "choice"
+                  }
+                },
+                "styles": {},
+                "events": {
+                  "value_change": {
+                    "name": "set_choice",
+                    "args": [
+                      {
+                        "op": "get",
+                        "value": {
+                          "op": "local",
+                          "name": "event"
+                        },
+                        "key": {
+                          "op": "literal",
+                          "value": "value"
+                        }
+                      }
+                    ],
+                    "prevent_default": false
+                  }
+                },
+                "children": [
+                  {
+                    "kind": "component",
+                    "library": "@radix-ui/themes",
+                    "export_name": "Select.Trigger",
+                    "attrs": {
+                      "id": {
+                        "op": "literal",
+                        "value": "choice"
+                      }
+                    },
+                    "styles": {},
+                    "events": {},
+                    "children": [],
+                    "key": null,
+                    "fallback": null
+                  },
+                  {
+                    "kind": "component",
+                    "library": "@radix-ui/themes",
+                    "export_name": "Select.Content",
+                    "attrs": {},
+                    "styles": {},
+                    "events": {},
+                    "children": [
+                      {
+                        "kind": "component",
+                        "library": "@radix-ui/themes",
+                        "export_name": "Select.Item",
+                        "attrs": {
+                          "value": {
+                            "op": "literal",
+                            "value": "one"
+                          }
+                        },
+                        "styles": {},
+                        "events": {},
+                        "children": [
+                          {
+                            "kind": "text",
+                            "value": {
+                              "op": "literal",
+                              "value": "First"
+                            }
+                          }
+                        ],
+                        "key": null,
+                        "fallback": null
+                      },
+                      {
+                        "kind": "component",
+                        "library": "@radix-ui/themes",
+                        "export_name": "Select.Item",
+                        "attrs": {
+                          "value": {
+                            "op": "literal",
+                            "value": "two"
+                          }
+                        },
+                        "styles": {},
+                        "events": {},
+                        "children": [
+                          {
+                            "kind": "text",
+                            "value": {
+                              "op": "literal",
+                              "value": "Second"
+                            }
+                          }
+                        ],
+                        "key": null,
+                        "fallback": null
+                      }
+                    ],
+                    "key": null,
+                    "fallback": null
+                  }
+                ],
+                "key": null,
+                "fallback": null
+              },
+              {
+                "kind": "component",
+                "library": "@radix-ui/themes",
+                "export_name": "Text",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "choice-value"
+                  }
+                },
+                "styles": {},
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "state",
+                      "name": "choice"
+                    }
+                  }
+                ],
+                "key": null,
+                "fallback": null
+              },
+              {
+                "kind": "component",
+                "library": "@radix-ui/themes",
+                "export_name": "Dialog.Root",
+                "attrs": {
+                  "open": {
+                    "op": "state",
+                    "name": "open"
+                  }
+                },
+                "styles": {},
+                "events": {
+                  "open_change": {
+                    "name": "set_open",
+                    "args": [
+                      {
+                        "op": "get",
+                        "value": {
+                          "op": "local",
+                          "name": "event"
+                        },
+                        "key": {
+                          "op": "literal",
+                          "value": "value"
+                        }
+                      }
+                    ],
+                    "prevent_default": false
+                  }
+                },
+                "children": [
+                  {
+                    "kind": "component",
+                    "library": "@radix-ui/themes",
+                    "export_name": "Dialog.Trigger",
+                    "attrs": {},
+                    "styles": {},
+                    "events": {},
+                    "children": [
+                      {
+                        "kind": "component",
+                        "library": "@radix-ui/themes",
+                        "export_name": "Button",
+                        "attrs": {
+                          "id": {
+                            "op": "literal",
+                            "value": "open-dialog"
+                          }
+                        },
+                        "styles": {},
+                        "events": {},
+                        "children": [
+                          {
+                            "kind": "text",
+                            "value": {
+                              "op": "literal",
+                              "value": "Open dialog"
+                            }
+                          }
+                        ],
+                        "key": null,
+                        "fallback": null
+                      }
+                    ],
+                    "key": null,
+                    "fallback": null
+                  },
+                  {
+                    "kind": "component",
+                    "library": "@radix-ui/themes",
+                    "export_name": "Dialog.Content",
+                    "attrs": {},
+                    "styles": {},
+                    "events": {},
+                    "children": [
+                      {
+                        "kind": "component",
+                        "library": "@radix-ui/themes",
+                        "export_name": "Dialog.Title",
+                        "attrs": {},
+                        "styles": {},
+                        "events": {},
+                        "children": [
+                          {
+                            "kind": "text",
+                            "value": {
+                              "op": "literal",
+                              "value": "Native event inside a React portal"
+                            }
+                          }
+                        ],
+                        "key": null,
+                        "fallback": null
+                      },
+                      {
+                        "kind": "component",
+                        "library": "@radix-ui/themes",
+                        "export_name": "Dialog.Description",
+                        "attrs": {},
+                        "styles": {},
+                        "events": {},
+                        "children": [
+                          {
+                            "kind": "text",
+                            "value": {
+                              "op": "literal",
+                              "value": "This button updates Rust state over WebSockets."
+                            }
+                          }
+                        ],
+                        "key": null,
+                        "fallback": null
+                      },
+                      {
+                        "kind": "component",
+                        "library": "@radix-ui/themes",
+                        "export_name": "Button",
+                        "attrs": {
+                          "id": {
+                            "op": "literal",
+                            "value": "portal-increment"
+                          }
+                        },
+                        "styles": {},
+                        "events": {
+                          "click": {
+                            "name": "increment",
+                            "args": [],
+                            "prevent_default": false
+                          }
+                        },
+                        "children": [
+                          {
+                            "kind": "text",
+                            "value": {
+                              "op": "literal",
+                              "value": "Portal increment"
+                            }
+                          }
+                        ],
+                        "key": null,
+                        "fallback": null
+                      },
+                      {
+                        "kind": "component",
+                        "library": "@radix-ui/themes",
+                        "export_name": "Dialog.Close",
+                        "attrs": {},
+                        "styles": {},
+                        "events": {},
+                        "children": [
+                          {
+                            "kind": "component",
+                            "library": "@radix-ui/themes",
+                            "export_name": "Button",
+                            "attrs": {
+                              "id": {
+                                "op": "literal",
+                                "value": "close-dialog"
+                              }
+                            },
+                            "styles": {},
+                            "events": {},
+                            "children": [
+                              {
+                                "kind": "text",
+                                "value": {
+                                  "op": "literal",
+                                  "value": "Close"
+                                }
+                              }
+                            ],
+                            "key": null,
+                            "fallback": null
+                          }
+                        ],
+                        "key": null,
+                        "fallback": null
+                      }
+                    ],
+                    "key": null,
+                    "fallback": null
+                  }
+                ],
+                "key": null,
+                "fallback": null
+              },
+              {
+                "kind": "component",
+                "library": "nano/demo",
+                "export_name": "ClientCounter",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "custom-counter"
+                  },
+                  "value": {
+                    "op": "state",
+                    "name": "count"
+                  }
+                },
+                "styles": {},
+                "events": {
+                  "value_change": {
+                    "name": "set_count",
+                    "args": [
+                      {
+                        "op": "get",
+                        "value": {
+                          "op": "local",
+                          "name": "event"
+                        },
+                        "key": {
+                          "op": "literal",
+                          "value": "value"
+                        }
+                      }
+                    ],
+                    "prevent_default": false
+                  }
+                },
+                "children": [],
+                "key": null,
+                "fallback": null
+              },
+              {
+                "kind": "element",
+                "tag": "a",
+                "attrs": {
+                  "href": {
+                    "op": "literal",
+                    "value": "/"
+                  },
+                  "id": {
+                    "op": "literal",
+                    "value": "to-html"
+                  }
+                },
+                "styles": {},
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "literal",
+                      "value": "Direct HTML page"
+                    }
+                  }
+                ],
+                "key": null
+              }
+            ],
+            "key": null,
+            "fallback": null
+          }
+        ],
+        "key": null,
+        "fallback": {
+          "kind": "element",
+          "tag": "main",
+          "attrs": {},
+          "styles": {},
+          "events": {},
+          "children": [
+            {
+              "kind": "element",
+              "tag": "h1",
+              "attrs": {},
+              "styles": {},
+              "events": {},
+              "children": [
+                {
+                  "kind": "text",
+                  "value": {
+                    "op": "literal",
+                    "value": "Direct HTML + Rust"
+                  }
+                }
+              ],
+              "key": null
+            },
+            {
+              "kind": "element",
+              "tag": "p",
+              "attrs": {
+                "id": {
+                  "op": "literal",
+                  "value": "count"
+                }
+              },
+              "styles": {},
+              "events": {},
+              "children": [
+                {
+                  "kind": "text",
+                  "value": {
+                    "op": "state",
+                    "name": "count"
+                  }
+                }
+              ],
+              "key": null
+            },
+            {
+              "kind": "element",
+              "tag": "button",
+              "attrs": {
+                "id": {
+                  "op": "literal",
+                  "value": "increment"
+                }
+              },
+              "styles": {},
+              "events": {
+                "click": {
+                  "name": "increment",
+                  "args": [],
+                  "prevent_default": false
+                }
+              },
+              "children": [
+                {
+                  "kind": "text",
+                  "value": {
+                    "op": "literal",
+                    "value": "Increment"
+                  }
+                }
+              ],
+              "key": null
+            },
+            {
+              "kind": "element",
+              "tag": "a",
+              "attrs": {
+                "href": {
+                  "op": "literal",
+                  "value": "/widgets"
+                },
+                "id": {
+                  "op": "literal",
+                  "value": "to-widgets"
+                }
+              },
+              "styles": {},
+              "events": {},
+              "children": [
+                {
+                  "kind": "text",
+                  "value": {
+                    "op": "literal",
+                    "value": "React widgets"
+                  }
+                }
+              ],
+              "key": null
+            }
+          ],
+          "key": null
+        }
+      }
+    }
+  ]
+}

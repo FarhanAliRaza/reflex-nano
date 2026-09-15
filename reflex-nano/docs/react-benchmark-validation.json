@@ -1,0 +1,47 @@
+{
+  "version": "0.4.0",
+  "validated_navigations": 144,
+  "errors": [],
+  "median_1000": {
+    "nano": {
+      "initial": {
+        "ready_ms": 89.50000000372529,
+        "first_event_ms": 1.75
+      },
+      "first_reload": {
+        "ready_ms": 85.69999999925494,
+        "first_event_ms": 1.25
+      }
+    },
+    "nano_react": {
+      "initial": {
+        "ready_ms": 130.54999999701977,
+        "first_event_ms": 5.050000000745058
+      },
+      "first_reload": {
+        "ready_ms": 112.79999999701977,
+        "first_event_ms": 3.300000000745058
+      }
+    },
+    "nano_react_python": {
+      "initial": {
+        "ready_ms": 127.25,
+        "first_event_ms": 4.350000001490116
+      },
+      "first_reload": {
+        "ready_ms": 107.90000000223517,
+        "first_event_ms": 2.900000002235174
+      }
+    },
+    "reflex": {
+      "initial": {
+        "ready_ms": 159.84999999403954,
+        "first_event_ms": 10.649999998509884
+      },
+      "first_reload": {
+        "ready_ms": 121.64999999850988,
+        "first_event_ms": 7.100000001490116
+      }
+    }
+  }
+}

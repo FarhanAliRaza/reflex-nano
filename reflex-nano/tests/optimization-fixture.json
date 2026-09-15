@@ -1,0 +1,1461 @@
+{
+  "renderer": "react",
+  "schema": {
+    "fields": {
+      "count": {
+        "kind": "int",
+        "initial": 0
+      },
+      "groups": {
+        "kind": "list",
+        "initial": [
+          {
+            "children": [
+              {
+                "label": "x"
+              },
+              {
+                "label": "y"
+              }
+            ],
+            "label": "Group A"
+          },
+          {
+            "children": [
+              {
+                "label": "z"
+              }
+            ],
+            "label": "Group B"
+          }
+        ]
+      },
+      "items": {
+        "kind": "list",
+        "initial": [
+          {
+            "done": false,
+            "id": 0,
+            "label": "Item 0"
+          },
+          {
+            "done": false,
+            "id": 1,
+            "label": "Item 1"
+          },
+          {
+            "done": false,
+            "id": 2,
+            "label": "Item 2"
+          }
+        ]
+      },
+      "name": {
+        "kind": "string",
+        "initial": "Nano"
+      },
+      "progress": {
+        "kind": "int",
+        "initial": 0
+      }
+    },
+    "computed": {
+      "doubled": {
+        "op": "binary",
+        "operator": "mul",
+        "left": {
+          "op": "state",
+          "name": "count"
+        },
+        "right": {
+          "op": "literal",
+          "value": 2
+        }
+      },
+      "remaining": {
+        "op": "count",
+        "items": {
+          "op": "state",
+          "name": "items"
+        },
+        "name": "item",
+        "predicate": {
+          "op": "not",
+          "value": {
+            "op": "get",
+            "value": {
+              "op": "local",
+              "name": "item"
+            },
+            "key": {
+              "op": "literal",
+              "value": "done"
+            }
+          }
+        }
+      }
+    },
+    "events": {
+      "RuntimeState.background": {
+        "parameters": [
+          {
+            "name": "steps",
+            "kind": "int"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "progress",
+            "path": [],
+            "value": {
+              "op": "binary",
+              "operator": "add",
+              "left": {
+                "op": "state",
+                "name": "progress"
+              },
+              "right": {
+                "op": "literal",
+                "value": 1
+              }
+            }
+          }
+        ],
+        "mode": {
+          "kind": "background",
+          "milliseconds": 20,
+          "times": {
+            "op": "local",
+            "name": "steps"
+          }
+        }
+      },
+      "RuntimeState.chain": {
+        "parameters": [],
+        "actions": [
+          {
+            "op": "call",
+            "name": "RuntimeState.increment",
+            "args": [
+              {
+                "op": "literal",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "op": "call",
+            "name": "RuntimeState.increment",
+            "args": [
+              {
+                "op": "literal",
+                "value": 3
+              }
+            ]
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "RuntimeState.increment": {
+        "parameters": [
+          {
+            "name": "amount",
+            "kind": "int"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "count",
+            "path": [],
+            "value": {
+              "op": "binary",
+              "operator": "add",
+              "left": {
+                "op": "state",
+                "name": "count"
+              },
+              "right": {
+                "op": "local",
+                "name": "amount"
+              }
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "RuntimeState.increment_async": {
+        "parameters": [
+          {
+            "name": "amount",
+            "kind": "int"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "count",
+            "path": [],
+            "value": {
+              "op": "binary",
+              "operator": "add",
+              "left": {
+                "op": "state",
+                "name": "count"
+              },
+              "right": {
+                "op": "local",
+                "name": "amount"
+              }
+            }
+          }
+        ],
+        "mode": {
+          "kind": "deferred",
+          "milliseconds": 0
+        }
+      },
+      "RuntimeState.rename": {
+        "parameters": [
+          {
+            "name": "name",
+            "kind": "string"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "name",
+            "path": [],
+            "value": {
+              "op": "local",
+              "name": "name"
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "RuntimeState.stream": {
+        "parameters": [
+          {
+            "name": "steps",
+            "kind": "int"
+          }
+        ],
+        "actions": [
+          {
+            "op": "repeat",
+            "times": {
+              "op": "local",
+              "name": "steps"
+            },
+            "actions": [
+              {
+                "op": "set",
+                "field": "count",
+                "path": [],
+                "value": {
+                  "op": "binary",
+                  "operator": "add",
+                  "left": {
+                    "op": "state",
+                    "name": "count"
+                  },
+                  "right": {
+                    "op": "literal",
+                    "value": 1
+                  }
+                }
+              },
+              {
+                "op": "publish"
+              }
+            ]
+          }
+        ],
+        "mode": {
+          "kind": "streaming"
+        }
+      },
+      "RuntimeState.submit": {
+        "parameters": [
+          {
+            "name": "data",
+            "kind": "object"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "name",
+            "path": [],
+            "value": {
+              "op": "trim",
+              "value": {
+                "op": "get",
+                "value": {
+                  "op": "local",
+                  "name": "data"
+                },
+                "key": {
+                  "op": "literal",
+                  "value": "name"
+                }
+              }
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "RuntimeState.toggle": {
+        "parameters": [
+          {
+            "name": "index",
+            "kind": "int"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "items",
+            "path": [
+              {
+                "op": "local",
+                "name": "index"
+              },
+              {
+                "op": "literal",
+                "value": "done"
+              }
+            ],
+            "value": {
+              "op": "not",
+              "value": {
+                "op": "get",
+                "value": {
+                  "op": "get",
+                  "value": {
+                    "op": "state",
+                    "name": "items"
+                  },
+                  "key": {
+                    "op": "local",
+                    "name": "index"
+                  }
+                },
+                "key": {
+                  "op": "literal",
+                  "value": "done"
+                }
+              }
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "empty": {
+        "parameters": [],
+        "actions": [
+          {
+            "op": "set",
+            "field": "items",
+            "path": [],
+            "value": {
+              "op": "literal",
+              "value": []
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "nested": {
+        "parameters": [],
+        "actions": [
+          {
+            "op": "set",
+            "field": "groups",
+            "path": [],
+            "value": {
+              "op": "literal",
+              "value": [
+                {
+                  "children": [
+                    {
+                      "label": "q"
+                    }
+                  ],
+                  "label": "Changed"
+                }
+              ]
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "reorder": {
+        "parameters": [],
+        "actions": [
+          {
+            "op": "set",
+            "field": "items",
+            "path": [],
+            "value": {
+              "op": "literal",
+              "value": [
+                {
+                  "done": false,
+                  "id": 1,
+                  "label": "Item 1"
+                },
+                {
+                  "done": false,
+                  "id": 2,
+                  "label": "Item 2"
+                },
+                {
+                  "done": false,
+                  "id": 0,
+                  "label": "Item 0"
+                }
+              ]
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "restore": {
+        "parameters": [],
+        "actions": [
+          {
+            "op": "set",
+            "field": "items",
+            "path": [],
+            "value": {
+              "op": "literal",
+              "value": [
+                {
+                  "done": false,
+                  "id": 0,
+                  "label": "Item 0"
+                },
+                {
+                  "done": false,
+                  "id": 1,
+                  "label": "Item 1"
+                },
+                {
+                  "done": false,
+                  "id": 2,
+                  "label": "Item 2"
+                }
+              ]
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      }
+    }
+  },
+  "pages": [
+    {
+      "route": "/",
+      "title": "Runtime benchmark",
+      "tree": {
+        "kind": "element",
+        "tag": "main",
+        "attrs": {},
+        "styles": {},
+        "events": {},
+        "children": [
+          {
+            "kind": "text",
+            "value": {
+              "op": "state",
+              "name": "count"
+            }
+          },
+          {
+            "kind": "text",
+            "value": {
+              "op": "state",
+              "name": "doubled"
+            }
+          },
+          {
+            "kind": "text",
+            "value": {
+              "op": "state",
+              "name": "remaining"
+            }
+          },
+          {
+            "kind": "text",
+            "value": {
+              "op": "state",
+              "name": "name"
+            }
+          },
+          {
+            "kind": "text",
+            "value": {
+              "op": "state",
+              "name": "progress"
+            }
+          },
+          {
+            "kind": "each",
+            "items": {
+              "op": "state",
+              "name": "items"
+            },
+            "name": "item",
+            "index": "index",
+            "body": {
+              "kind": "element",
+              "tag": "p",
+              "attrs": {},
+              "styles": {},
+              "events": {},
+              "children": [
+                {
+                  "kind": "text",
+                  "value": {
+                    "op": "get",
+                    "value": {
+                      "op": "local",
+                      "name": "item"
+                    },
+                    "key": {
+                      "op": "literal",
+                      "value": "label"
+                    }
+                  }
+                }
+              ],
+              "key": {
+                "op": "get",
+                "value": {
+                  "op": "local",
+                  "name": "item"
+                },
+                "key": {
+                  "op": "literal",
+                  "value": "id"
+                }
+              }
+            }
+          }
+        ],
+        "key": null
+      }
+    },
+    {
+      "route": "/opt",
+      "title": "Optimization regressions",
+      "tree": {
+        "kind": "element",
+        "tag": "main",
+        "attrs": {},
+        "styles": {},
+        "events": {},
+        "children": [
+          {
+            "kind": "element",
+            "tag": "p",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "count"
+              }
+            },
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "state",
+                  "name": "count"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "p",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "doubled"
+              }
+            },
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "state",
+                  "name": "doubled"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "p",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "remaining"
+              }
+            },
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "state",
+                  "name": "remaining"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "p",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "adjacent"
+              }
+            },
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": ""
+                }
+              },
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "A"
+                }
+              },
+              {
+                "kind": "text",
+                "value": {
+                  "op": "state",
+                  "name": "name"
+                }
+              },
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "Z"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "p",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "constant"
+              }
+            },
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "binary",
+                  "operator": "mul",
+                  "left": {
+                    "op": "literal",
+                    "value": 2
+                  },
+                  "right": {
+                    "op": "literal",
+                    "value": 3
+                  }
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "input",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "early-input"
+              },
+              "value": {
+                "op": "state",
+                "name": "name"
+              }
+            },
+            "styles": {},
+            "events": {},
+            "children": [],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "input",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "debounced-name"
+              },
+              "value": {
+                "op": "state",
+                "name": "name"
+              }
+            },
+            "styles": {},
+            "events": {
+              "input": {
+                "name": "RuntimeState.rename",
+                "args": [
+                  {
+                    "op": "get",
+                    "value": {
+                      "op": "local",
+                      "name": "event"
+                    },
+                    "key": {
+                      "op": "literal",
+                      "value": "value"
+                    }
+                  }
+                ],
+                "prevent_default": false,
+                "debounce_ms": 80
+              }
+            },
+            "children": [],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "button",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "increment"
+              },
+              "type": {
+                "op": "literal",
+                "value": "button"
+              }
+            },
+            "styles": {},
+            "events": {
+              "click": {
+                "name": "RuntimeState.increment",
+                "args": [
+                  {
+                    "op": "literal",
+                    "value": 1
+                  }
+                ],
+                "prevent_default": false
+              }
+            },
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "increment"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "button",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "debounce"
+              },
+              "type": {
+                "op": "literal",
+                "value": "button"
+              }
+            },
+            "styles": {},
+            "events": {
+              "click": {
+                "name": "RuntimeState.increment",
+                "args": [
+                  {
+                    "op": "literal",
+                    "value": 1
+                  }
+                ],
+                "prevent_default": false,
+                "debounce_ms": 80
+              }
+            },
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "debounce"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "button",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "throttle"
+              },
+              "type": {
+                "op": "literal",
+                "value": "button"
+              }
+            },
+            "styles": {},
+            "events": {
+              "click": {
+                "name": "RuntimeState.increment",
+                "args": [
+                  {
+                    "op": "literal",
+                    "value": 1
+                  }
+                ],
+                "prevent_default": false,
+                "throttle_ms": 200
+              }
+            },
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "throttle"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "button",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "temporal"
+              },
+              "type": {
+                "op": "literal",
+                "value": "button"
+              }
+            },
+            "styles": {},
+            "events": {
+              "click": {
+                "name": "RuntimeState.increment",
+                "args": [
+                  {
+                    "op": "literal",
+                    "value": 1
+                  }
+                ],
+                "prevent_default": false,
+                "temporal": true
+              }
+            },
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "temporal"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "div",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "ancestor"
+              }
+            },
+            "styles": {},
+            "events": {
+              "click": {
+                "name": "RuntimeState.increment",
+                "args": [
+                  {
+                    "op": "literal",
+                    "value": 2
+                  }
+                ],
+                "prevent_default": false
+              }
+            },
+            "children": [
+              {
+                "kind": "element",
+                "tag": "button",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "stop"
+                  },
+                  "type": {
+                    "op": "literal",
+                    "value": "button"
+                  }
+                },
+                "styles": {},
+                "events": {
+                  "click": {
+                    "name": "RuntimeState.increment",
+                    "args": [
+                      {
+                        "op": "literal",
+                        "value": 1
+                      }
+                    ],
+                    "prevent_default": false,
+                    "stop_propagation": true
+                  }
+                },
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "literal",
+                      "value": "stop"
+                    }
+                  }
+                ],
+                "key": null
+              },
+              {
+                "kind": "element",
+                "tag": "button",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "bubble"
+                  },
+                  "type": {
+                    "op": "literal",
+                    "value": "button"
+                  }
+                },
+                "styles": {},
+                "events": {
+                  "click": {
+                    "name": "RuntimeState.increment",
+                    "args": [
+                      {
+                        "op": "literal",
+                        "value": 1
+                      }
+                    ],
+                    "prevent_default": false
+                  }
+                },
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "literal",
+                      "value": "bubble"
+                    }
+                  }
+                ],
+                "key": null
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "button",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "reorder"
+              },
+              "type": {
+                "op": "literal",
+                "value": "button"
+              }
+            },
+            "styles": {},
+            "events": {
+              "click": {
+                "name": "reorder",
+                "args": [],
+                "prevent_default": false
+              }
+            },
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "reorder"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "button",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "empty"
+              },
+              "type": {
+                "op": "literal",
+                "value": "button"
+              }
+            },
+            "styles": {},
+            "events": {
+              "click": {
+                "name": "empty",
+                "args": [],
+                "prevent_default": false
+              }
+            },
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "empty"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "button",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "restore"
+              },
+              "type": {
+                "op": "literal",
+                "value": "button"
+              }
+            },
+            "styles": {},
+            "events": {
+              "click": {
+                "name": "restore",
+                "args": [],
+                "prevent_default": false
+              }
+            },
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "restore"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "button",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "nested"
+              },
+              "type": {
+                "op": "literal",
+                "value": "button"
+              }
+            },
+            "styles": {},
+            "events": {
+              "click": {
+                "name": "nested",
+                "args": [],
+                "prevent_default": false
+              }
+            },
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "nested"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "when",
+            "condition": {
+              "op": "binary",
+              "operator": "gt",
+              "left": {
+                "op": "state",
+                "name": "count"
+              },
+              "right": {
+                "op": "literal",
+                "value": 0
+              }
+            },
+            "yes": {
+              "kind": "fragment",
+              "children": [
+                {
+                  "kind": "element",
+                  "tag": "p",
+                  "attrs": {
+                    "id": {
+                      "op": "literal",
+                      "value": "conditional"
+                    }
+                  },
+                  "styles": {},
+                  "events": {},
+                  "children": [
+                    {
+                      "kind": "text",
+                      "value": {
+                        "op": "literal",
+                        "value": "visible"
+                      }
+                    }
+                  ],
+                  "key": null
+                },
+                {
+                  "kind": "text",
+                  "value": {
+                    "op": "literal",
+                    "value": "!"
+                  }
+                }
+              ]
+            },
+            "no": {
+              "kind": "fragment",
+              "children": []
+            }
+          },
+          {
+            "kind": "element",
+            "tag": "div",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "rows"
+              }
+            },
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "each",
+                "items": {
+                  "op": "state",
+                  "name": "items"
+                },
+                "name": "item",
+                "index": "index",
+                "body": {
+                  "kind": "element",
+                  "tag": "div",
+                  "attrs": {
+                    "data-id": {
+                      "op": "get",
+                      "value": {
+                        "op": "local",
+                        "name": "item"
+                      },
+                      "key": {
+                        "op": "literal",
+                        "value": "id"
+                      }
+                    }
+                  },
+                  "styles": {},
+                  "events": {},
+                  "children": [
+                    {
+                      "kind": "element",
+                      "tag": "span",
+                      "attrs": {
+                        "class": {
+                          "op": "literal",
+                          "value": "label"
+                        }
+                      },
+                      "styles": {},
+                      "events": {},
+                      "children": [
+                        {
+                          "kind": "text",
+                          "value": {
+                            "op": "get",
+                            "value": {
+                              "op": "local",
+                              "name": "item"
+                            },
+                            "key": {
+                              "op": "literal",
+                              "value": "label"
+                            }
+                          }
+                        }
+                      ],
+                      "key": null
+                    },
+                    {
+                      "kind": "element",
+                      "tag": "input",
+                      "attrs": {
+                        "class": {
+                          "op": "literal",
+                          "value": "edit"
+                        },
+                        "value": {
+                          "op": "get",
+                          "value": {
+                            "op": "local",
+                            "name": "item"
+                          },
+                          "key": {
+                            "op": "literal",
+                            "value": "label"
+                          }
+                        }
+                      },
+                      "styles": {},
+                      "events": {},
+                      "children": [],
+                      "key": null
+                    },
+                    {
+                      "kind": "element",
+                      "tag": "input",
+                      "attrs": {
+                        "checked": {
+                          "op": "get",
+                          "value": {
+                            "op": "local",
+                            "name": "item"
+                          },
+                          "key": {
+                            "op": "literal",
+                            "value": "done"
+                          }
+                        },
+                        "type": {
+                          "op": "literal",
+                          "value": "checkbox"
+                        }
+                      },
+                      "styles": {},
+                      "events": {
+                        "change": {
+                          "name": "RuntimeState.toggle",
+                          "args": [
+                            {
+                              "op": "local",
+                              "name": "index"
+                            }
+                          ],
+                          "prevent_default": false
+                        }
+                      },
+                      "children": [],
+                      "key": null
+                    }
+                  ],
+                  "key": {
+                    "op": "get",
+                    "value": {
+                      "op": "local",
+                      "name": "item"
+                    },
+                    "key": {
+                      "op": "literal",
+                      "value": "id"
+                    }
+                  }
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "div",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "groups"
+              }
+            },
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "each",
+                "items": {
+                  "op": "state",
+                  "name": "groups"
+                },
+                "name": "item",
+                "index": "index",
+                "body": {
+                  "kind": "element",
+                  "tag": "section",
+                  "attrs": {},
+                  "styles": {},
+                  "events": {},
+                  "children": [
+                    {
+                      "kind": "text",
+                      "value": {
+                        "op": "get",
+                        "value": {
+                          "op": "local",
+                          "name": "item"
+                        },
+                        "key": {
+                          "op": "literal",
+                          "value": "label"
+                        }
+                      }
+                    },
+                    {
+                      "kind": "each",
+                      "items": {
+                        "op": "get",
+                        "value": {
+                          "op": "local",
+                          "name": "item"
+                        },
+                        "key": {
+                          "op": "literal",
+                          "value": "children"
+                        }
+                      },
+                      "name": "item",
+                      "index": "index",
+                      "body": {
+                        "kind": "element",
+                        "tag": "b",
+                        "attrs": {},
+                        "styles": {},
+                        "events": {},
+                        "children": [
+                          {
+                            "kind": "text",
+                            "value": {
+                              "op": "get",
+                              "value": {
+                                "op": "local",
+                                "name": "item"
+                              },
+                              "key": {
+                                "op": "literal",
+                                "value": "label"
+                              }
+                            }
+                          }
+                        ],
+                        "key": null
+                      }
+                    },
+                    {
+                      "kind": "text",
+                      "value": {
+                        "op": "get",
+                        "value": {
+                          "op": "local",
+                          "name": "item"
+                        },
+                        "key": {
+                          "op": "literal",
+                          "value": "label"
+                        }
+                      }
+                    }
+                  ],
+                  "key": null
+                }
+              }
+            ],
+            "key": null
+          }
+        ],
+        "key": null
+      }
+    }
+  ]
+}

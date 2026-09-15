@@ -1,0 +1,1983 @@
+{
+  "schema": {
+    "fields": {
+      "count": {
+        "kind": "int",
+        "initial": 0
+      },
+      "items": {
+        "kind": "list",
+        "initial": [
+          {
+            "done": false,
+            "id": 1,
+            "label": "Build the Rust runtime"
+          },
+          {
+            "done": false,
+            "id": 2,
+            "label": "Expose native Python bindings"
+          },
+          {
+            "done": false,
+            "id": 3,
+            "label": "Measure real WebSocket events"
+          }
+        ]
+      },
+      "name": {
+        "kind": "string",
+        "initial": "Nano"
+      },
+      "next_id": {
+        "kind": "int",
+        "initial": 4
+      },
+      "priority": {
+        "kind": "string",
+        "initial": "Medium"
+      },
+      "progress": {
+        "kind": "int",
+        "initial": 0
+      }
+    },
+    "computed": {
+      "doubled": {
+        "op": "binary",
+        "operator": "mul",
+        "left": {
+          "op": "state",
+          "name": "count"
+        },
+        "right": {
+          "op": "literal",
+          "value": 2
+        }
+      },
+      "remaining": {
+        "op": "count",
+        "items": {
+          "op": "state",
+          "name": "items"
+        },
+        "name": "item",
+        "predicate": {
+          "op": "not",
+          "value": {
+            "op": "get",
+            "value": {
+              "op": "local",
+              "name": "item"
+            },
+            "key": {
+              "op": "literal",
+              "value": "done"
+            }
+          }
+        }
+      }
+    },
+    "events": {
+      "RuntimeState.add_task": {
+        "parameters": [
+          {
+            "name": "data",
+            "kind": "object"
+          }
+        ],
+        "actions": [
+          {
+            "op": "require",
+            "condition": {
+              "op": "binary",
+              "operator": "gt",
+              "left": {
+                "op": "length",
+                "value": {
+                  "op": "trim",
+                  "value": {
+                    "op": "get",
+                    "value": {
+                      "op": "local",
+                      "name": "data"
+                    },
+                    "key": {
+                      "op": "literal",
+                      "value": "task"
+                    }
+                  }
+                }
+              },
+              "right": {
+                "op": "literal",
+                "value": 0
+              }
+            },
+            "message": "Write a task first"
+          },
+          {
+            "op": "append",
+            "field": "items",
+            "value": {
+              "op": "object",
+              "fields": {
+                "done": {
+                  "op": "literal",
+                  "value": false
+                },
+                "id": {
+                  "op": "state",
+                  "name": "next_id"
+                },
+                "label": {
+                  "op": "trim",
+                  "value": {
+                    "op": "get",
+                    "value": {
+                      "op": "local",
+                      "name": "data"
+                    },
+                    "key": {
+                      "op": "literal",
+                      "value": "task"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "op": "set",
+            "field": "next_id",
+            "path": [],
+            "value": {
+              "op": "binary",
+              "operator": "add",
+              "left": {
+                "op": "state",
+                "name": "next_id"
+              },
+              "right": {
+                "op": "literal",
+                "value": 1
+              }
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "RuntimeState.background": {
+        "parameters": [
+          {
+            "name": "steps",
+            "kind": "int"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "progress",
+            "path": [],
+            "value": {
+              "op": "binary",
+              "operator": "add",
+              "left": {
+                "op": "state",
+                "name": "progress"
+              },
+              "right": {
+                "op": "literal",
+                "value": 1
+              }
+            }
+          }
+        ],
+        "mode": {
+          "kind": "background",
+          "milliseconds": 20,
+          "times": {
+            "op": "local",
+            "name": "steps"
+          }
+        }
+      },
+      "RuntimeState.chain": {
+        "parameters": [],
+        "actions": [
+          {
+            "op": "call",
+            "name": "RuntimeState.increment",
+            "args": [
+              {
+                "op": "literal",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "op": "call",
+            "name": "RuntimeState.increment",
+            "args": [
+              {
+                "op": "literal",
+                "value": 3
+              }
+            ]
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "RuntimeState.increment": {
+        "parameters": [
+          {
+            "name": "amount",
+            "kind": "int"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "count",
+            "path": [],
+            "value": {
+              "op": "binary",
+              "operator": "add",
+              "left": {
+                "op": "state",
+                "name": "count"
+              },
+              "right": {
+                "op": "local",
+                "name": "amount"
+              }
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "RuntimeState.increment_async": {
+        "parameters": [
+          {
+            "name": "amount",
+            "kind": "int"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "count",
+            "path": [],
+            "value": {
+              "op": "binary",
+              "operator": "add",
+              "left": {
+                "op": "state",
+                "name": "count"
+              },
+              "right": {
+                "op": "local",
+                "name": "amount"
+              }
+            }
+          }
+        ],
+        "mode": {
+          "kind": "deferred",
+          "milliseconds": 0
+        }
+      },
+      "RuntimeState.priority": {
+        "parameters": [
+          {
+            "name": "value",
+            "kind": "string"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "priority",
+            "path": [],
+            "value": {
+              "op": "local",
+              "name": "value"
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "RuntimeState.remove": {
+        "parameters": [
+          {
+            "name": "index",
+            "kind": "int"
+          }
+        ],
+        "actions": [
+          {
+            "op": "remove",
+            "field": "items",
+            "index": {
+              "op": "local",
+              "name": "index"
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "RuntimeState.rename": {
+        "parameters": [
+          {
+            "name": "name",
+            "kind": "string"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "name",
+            "path": [],
+            "value": {
+              "op": "local",
+              "name": "name"
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "RuntimeState.stream": {
+        "parameters": [
+          {
+            "name": "steps",
+            "kind": "int"
+          }
+        ],
+        "actions": [
+          {
+            "op": "repeat",
+            "times": {
+              "op": "local",
+              "name": "steps"
+            },
+            "actions": [
+              {
+                "op": "set",
+                "field": "count",
+                "path": [],
+                "value": {
+                  "op": "binary",
+                  "operator": "add",
+                  "left": {
+                    "op": "state",
+                    "name": "count"
+                  },
+                  "right": {
+                    "op": "literal",
+                    "value": 1
+                  }
+                }
+              },
+              {
+                "op": "publish"
+              }
+            ]
+          }
+        ],
+        "mode": {
+          "kind": "streaming"
+        }
+      },
+      "RuntimeState.submit": {
+        "parameters": [
+          {
+            "name": "data",
+            "kind": "object"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "name",
+            "path": [],
+            "value": {
+              "op": "trim",
+              "value": {
+                "op": "get",
+                "value": {
+                  "op": "local",
+                  "name": "data"
+                },
+                "key": {
+                  "op": "literal",
+                  "value": "name"
+                }
+              }
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      },
+      "RuntimeState.toggle": {
+        "parameters": [
+          {
+            "name": "index",
+            "kind": "int"
+          }
+        ],
+        "actions": [
+          {
+            "op": "set",
+            "field": "items",
+            "path": [
+              {
+                "op": "local",
+                "name": "index"
+              },
+              {
+                "op": "literal",
+                "value": "done"
+              }
+            ],
+            "value": {
+              "op": "not",
+              "value": {
+                "op": "get",
+                "value": {
+                  "op": "get",
+                  "value": {
+                    "op": "state",
+                    "name": "items"
+                  },
+                  "key": {
+                    "op": "local",
+                    "name": "index"
+                  }
+                },
+                "key": {
+                  "op": "literal",
+                  "value": "done"
+                }
+              }
+            }
+          }
+        ],
+        "mode": {
+          "kind": "immediate"
+        }
+      }
+    }
+  },
+  "pages": [
+    {
+      "route": "/",
+      "title": "Reflex Nano · Rust runtime",
+      "tree": {
+        "kind": "element",
+        "tag": "main",
+        "attrs": {},
+        "styles": {
+          "display": {
+            "op": "literal",
+            "value": "grid"
+          },
+          "gap": {
+            "op": "literal",
+            "value": "24px"
+          },
+          "margin": {
+            "op": "literal",
+            "value": "36px auto"
+          },
+          "max-width": {
+            "op": "literal",
+            "value": "860px"
+          },
+          "padding": {
+            "op": "literal",
+            "value": "0 20px"
+          }
+        },
+        "events": {},
+        "children": [
+          {
+            "kind": "element",
+            "tag": "p",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "eyebrow"
+              }
+            },
+            "styles": {
+              "font-size": {
+                "op": "literal",
+                "value": "12px"
+              },
+              "letter-spacing": {
+                "op": "literal",
+                "value": "2px"
+              }
+            },
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "REFLEX NANO / NATIVE RUST RUNTIME"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "h1",
+            "attrs": {},
+            "styles": {
+              "font-size": {
+                "op": "literal",
+                "value": "40px"
+              }
+            },
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "Small framework. Rust all the way."
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "p",
+            "attrs": {},
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "State, events, computed values and background work run in Rust. This same app runs through the Rust executable or thin Python bindings."
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "section",
+            "attrs": {},
+            "styles": {
+              "background": {
+                "op": "literal",
+                "value": "white"
+              },
+              "border": {
+                "op": "literal",
+                "value": "1px solid #dbe4dd"
+              },
+              "border-radius": {
+                "op": "literal",
+                "value": "16px"
+              },
+              "display": {
+                "op": "literal",
+                "value": "grid"
+              },
+              "gap": {
+                "op": "literal",
+                "value": "14px"
+              },
+              "padding": {
+                "op": "literal",
+                "value": "24px"
+              }
+            },
+            "events": {},
+            "children": [
+              {
+                "kind": "element",
+                "tag": "h2",
+                "attrs": {},
+                "styles": {},
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "literal",
+                      "value": "Reactive state"
+                    }
+                  }
+                ],
+                "key": null
+              },
+              {
+                "kind": "element",
+                "tag": "p",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "count"
+                  }
+                },
+                "styles": {
+                  "font-size": {
+                    "op": "literal",
+                    "value": "64px"
+                  },
+                  "margin": {
+                    "op": "literal",
+                    "value": "0"
+                  }
+                },
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "state",
+                      "name": "count"
+                    }
+                  }
+                ],
+                "key": null
+              },
+              {
+                "kind": "element",
+                "tag": "p",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "doubled"
+                  }
+                },
+                "styles": {},
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "concat",
+                      "parts": [
+                        {
+                          "op": "literal",
+                          "value": "Computed double: "
+                        },
+                        {
+                          "op": "state",
+                          "name": "doubled"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "key": null
+              },
+              {
+                "kind": "when",
+                "condition": {
+                  "op": "binary",
+                  "operator": "gt",
+                  "left": {
+                    "op": "state",
+                    "name": "count"
+                  },
+                  "right": {
+                    "op": "literal",
+                    "value": 0
+                  }
+                },
+                "yes": {
+                  "kind": "element",
+                  "tag": "p",
+                  "attrs": {
+                    "id": {
+                      "op": "literal",
+                      "value": "positive"
+                    }
+                  },
+                  "styles": {},
+                  "events": {},
+                  "children": [
+                    {
+                      "kind": "text",
+                      "value": {
+                        "op": "literal",
+                        "value": "Above zero"
+                      }
+                    }
+                  ],
+                  "key": null
+                },
+                "no": {
+                  "kind": "text",
+                  "value": {
+                    "op": "literal",
+                    "value": "Ready"
+                  }
+                }
+              },
+              {
+                "kind": "element",
+                "tag": "div",
+                "attrs": {},
+                "styles": {
+                  "display": {
+                    "op": "literal",
+                    "value": "flex"
+                  },
+                  "gap": {
+                    "op": "literal",
+                    "value": "12px"
+                  }
+                },
+                "events": {},
+                "children": [
+                  {
+                    "kind": "element",
+                    "tag": "button",
+                    "attrs": {
+                      "type": {
+                        "op": "literal",
+                        "value": "button"
+                      }
+                    },
+                    "styles": {},
+                    "events": {
+                      "click": {
+                        "name": "RuntimeState.increment",
+                        "args": [
+                          {
+                            "op": "literal",
+                            "value": 1
+                          }
+                        ],
+                        "prevent_default": false
+                      }
+                    },
+                    "children": [
+                      {
+                        "kind": "text",
+                        "value": {
+                          "op": "literal",
+                          "value": "Increment"
+                        }
+                      }
+                    ],
+                    "key": null
+                  },
+                  {
+                    "kind": "element",
+                    "tag": "button",
+                    "attrs": {
+                      "type": {
+                        "op": "literal",
+                        "value": "button"
+                      }
+                    },
+                    "styles": {},
+                    "events": {
+                      "click": {
+                        "name": "RuntimeState.increment_async",
+                        "args": [
+                          {
+                            "op": "literal",
+                            "value": 1
+                          }
+                        ],
+                        "prevent_default": false
+                      }
+                    },
+                    "children": [
+                      {
+                        "kind": "text",
+                        "value": {
+                          "op": "literal",
+                          "value": "Async +1"
+                        }
+                      }
+                    ],
+                    "key": null
+                  }
+                ],
+                "key": null
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "section",
+            "attrs": {},
+            "styles": {
+              "background": {
+                "op": "literal",
+                "value": "white"
+              },
+              "border": {
+                "op": "literal",
+                "value": "1px solid #dbe4dd"
+              },
+              "border-radius": {
+                "op": "literal",
+                "value": "16px"
+              },
+              "display": {
+                "op": "literal",
+                "value": "grid"
+              },
+              "gap": {
+                "op": "literal",
+                "value": "14px"
+              },
+              "padding": {
+                "op": "literal",
+                "value": "24px"
+              }
+            },
+            "events": {},
+            "children": [
+              {
+                "kind": "element",
+                "tag": "h2",
+                "attrs": {},
+                "styles": {},
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "literal",
+                      "value": "Controlled inputs"
+                    }
+                  }
+                ],
+                "key": null
+              },
+              {
+                "kind": "element",
+                "tag": "label",
+                "attrs": {
+                  "for": {
+                    "op": "literal",
+                    "value": "name"
+                  }
+                },
+                "styles": {},
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "literal",
+                      "value": "Your name"
+                    }
+                  }
+                ],
+                "key": null
+              },
+              {
+                "kind": "element",
+                "tag": "input",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "name"
+                  },
+                  "value": {
+                    "op": "state",
+                    "name": "name"
+                  }
+                },
+                "styles": {},
+                "events": {
+                  "input": {
+                    "name": "RuntimeState.rename",
+                    "args": [
+                      {
+                        "op": "get",
+                        "value": {
+                          "op": "local",
+                          "name": "event"
+                        },
+                        "key": {
+                          "op": "literal",
+                          "value": "value"
+                        }
+                      }
+                    ],
+                    "prevent_default": false
+                  }
+                },
+                "children": [],
+                "key": null
+              },
+              {
+                "kind": "element",
+                "tag": "p",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "greeting"
+                  }
+                },
+                "styles": {},
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "concat",
+                      "parts": [
+                        {
+                          "op": "literal",
+                          "value": "Hello, "
+                        },
+                        {
+                          "op": "state",
+                          "name": "name"
+                        },
+                        {
+                          "op": "literal",
+                          "value": "."
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "key": null
+              },
+              {
+                "kind": "element",
+                "tag": "select",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "priority"
+                  },
+                  "value": {
+                    "op": "state",
+                    "name": "priority"
+                  }
+                },
+                "styles": {},
+                "events": {
+                  "change": {
+                    "name": "RuntimeState.priority",
+                    "args": [
+                      {
+                        "op": "get",
+                        "value": {
+                          "op": "local",
+                          "name": "event"
+                        },
+                        "key": {
+                          "op": "literal",
+                          "value": "value"
+                        }
+                      }
+                    ],
+                    "prevent_default": false
+                  }
+                },
+                "children": [
+                  {
+                    "kind": "element",
+                    "tag": "option",
+                    "attrs": {
+                      "value": {
+                        "op": "literal",
+                        "value": "Low"
+                      }
+                    },
+                    "styles": {},
+                    "events": {},
+                    "children": [
+                      {
+                        "kind": "text",
+                        "value": {
+                          "op": "literal",
+                          "value": "Low"
+                        }
+                      }
+                    ],
+                    "key": null
+                  },
+                  {
+                    "kind": "element",
+                    "tag": "option",
+                    "attrs": {
+                      "value": {
+                        "op": "literal",
+                        "value": "Medium"
+                      }
+                    },
+                    "styles": {},
+                    "events": {},
+                    "children": [
+                      {
+                        "kind": "text",
+                        "value": {
+                          "op": "literal",
+                          "value": "Medium"
+                        }
+                      }
+                    ],
+                    "key": null
+                  },
+                  {
+                    "kind": "element",
+                    "tag": "option",
+                    "attrs": {
+                      "value": {
+                        "op": "literal",
+                        "value": "High"
+                      }
+                    },
+                    "styles": {},
+                    "events": {},
+                    "children": [
+                      {
+                        "kind": "text",
+                        "value": {
+                          "op": "literal",
+                          "value": "High"
+                        }
+                      }
+                    ],
+                    "key": null
+                  }
+                ],
+                "key": null
+              },
+              {
+                "kind": "element",
+                "tag": "p",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "priority-label"
+                  }
+                },
+                "styles": {},
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "select",
+                      "condition": {
+                        "op": "binary",
+                        "operator": "eq",
+                        "left": {
+                          "op": "state",
+                          "name": "priority"
+                        },
+                        "right": {
+                          "op": "literal",
+                          "value": "High"
+                        }
+                      },
+                      "yes": {
+                        "op": "literal",
+                        "value": "High priority"
+                      },
+                      "no": {
+                        "op": "literal",
+                        "value": "Normal priority"
+                      }
+                    }
+                  }
+                ],
+                "key": null
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "section",
+            "attrs": {},
+            "styles": {
+              "background": {
+                "op": "literal",
+                "value": "white"
+              },
+              "border": {
+                "op": "literal",
+                "value": "1px solid #dbe4dd"
+              },
+              "border-radius": {
+                "op": "literal",
+                "value": "16px"
+              },
+              "display": {
+                "op": "literal",
+                "value": "grid"
+              },
+              "gap": {
+                "op": "literal",
+                "value": "14px"
+              },
+              "padding": {
+                "op": "literal",
+                "value": "24px"
+              }
+            },
+            "events": {},
+            "children": [
+              {
+                "kind": "element",
+                "tag": "h2",
+                "attrs": {},
+                "styles": {},
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "literal",
+                      "value": "Forms and keyed lists"
+                    }
+                  }
+                ],
+                "key": null
+              },
+              {
+                "kind": "element",
+                "tag": "form",
+                "attrs": {
+                  "data-nano-reset": {
+                    "op": "literal",
+                    "value": "true"
+                  }
+                },
+                "styles": {
+                  "display": {
+                    "op": "literal",
+                    "value": "flex"
+                  },
+                  "flex-wrap": {
+                    "op": "literal",
+                    "value": "wrap"
+                  },
+                  "gap": {
+                    "op": "literal",
+                    "value": "12px"
+                  }
+                },
+                "events": {
+                  "submit": {
+                    "name": "RuntimeState.add_task",
+                    "args": [
+                      {
+                        "op": "get",
+                        "value": {
+                          "op": "local",
+                          "name": "event"
+                        },
+                        "key": {
+                          "op": "literal",
+                          "value": "value"
+                        }
+                      }
+                    ],
+                    "prevent_default": true
+                  }
+                },
+                "children": [
+                  {
+                    "kind": "element",
+                    "tag": "input",
+                    "attrs": {
+                      "id": {
+                        "op": "literal",
+                        "value": "task-input"
+                      },
+                      "name": {
+                        "op": "literal",
+                        "value": "task"
+                      },
+                      "placeholder": {
+                        "op": "literal",
+                        "value": "Your next task"
+                      }
+                    },
+                    "styles": {},
+                    "events": {},
+                    "children": [],
+                    "key": null
+                  },
+                  {
+                    "kind": "element",
+                    "tag": "button",
+                    "attrs": {
+                      "type": {
+                        "op": "literal",
+                        "value": "submit"
+                      }
+                    },
+                    "styles": {},
+                    "events": {},
+                    "children": [
+                      {
+                        "kind": "text",
+                        "value": {
+                          "op": "literal",
+                          "value": "Add task"
+                        }
+                      }
+                    ],
+                    "key": null
+                  }
+                ],
+                "key": null
+              },
+              {
+                "kind": "element",
+                "tag": "div",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "tasks"
+                  }
+                },
+                "styles": {
+                  "display": {
+                    "op": "literal",
+                    "value": "grid"
+                  },
+                  "gap": {
+                    "op": "literal",
+                    "value": "12px"
+                  }
+                },
+                "events": {},
+                "children": [
+                  {
+                    "kind": "each",
+                    "items": {
+                      "op": "state",
+                      "name": "items"
+                    },
+                    "name": "item",
+                    "index": "index",
+                    "body": {
+                      "kind": "element",
+                      "tag": "div",
+                      "attrs": {},
+                      "styles": {
+                        "align-items": {
+                          "op": "literal",
+                          "value": "center"
+                        },
+                        "display": {
+                          "op": "literal",
+                          "value": "flex"
+                        },
+                        "gap": {
+                          "op": "literal",
+                          "value": "12px"
+                        }
+                      },
+                      "events": {},
+                      "children": [
+                        {
+                          "kind": "element",
+                          "tag": "input",
+                          "attrs": {
+                            "aria-label": {
+                              "op": "concat",
+                              "parts": [
+                                {
+                                  "op": "literal",
+                                  "value": "Complete "
+                                },
+                                {
+                                  "op": "get",
+                                  "value": {
+                                    "op": "local",
+                                    "name": "item"
+                                  },
+                                  "key": {
+                                    "op": "literal",
+                                    "value": "label"
+                                  }
+                                }
+                              ]
+                            },
+                            "checked": {
+                              "op": "get",
+                              "value": {
+                                "op": "local",
+                                "name": "item"
+                              },
+                              "key": {
+                                "op": "literal",
+                                "value": "done"
+                              }
+                            },
+                            "type": {
+                              "op": "literal",
+                              "value": "checkbox"
+                            }
+                          },
+                          "styles": {},
+                          "events": {
+                            "input": {
+                              "name": "RuntimeState.toggle",
+                              "args": [
+                                {
+                                  "op": "local",
+                                  "name": "index"
+                                }
+                              ],
+                              "prevent_default": false
+                            }
+                          },
+                          "children": [],
+                          "key": null
+                        },
+                        {
+                          "kind": "element",
+                          "tag": "a",
+                          "attrs": {
+                            "href": {
+                              "op": "concat",
+                              "parts": [
+                                {
+                                  "op": "literal",
+                                  "value": "/item/"
+                                },
+                                {
+                                  "op": "get",
+                                  "value": {
+                                    "op": "local",
+                                    "name": "item"
+                                  },
+                                  "key": {
+                                    "op": "literal",
+                                    "value": "id"
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "styles": {
+                            "flex": {
+                              "op": "literal",
+                              "value": "1"
+                            }
+                          },
+                          "events": {},
+                          "children": [
+                            {
+                              "kind": "text",
+                              "value": {
+                                "op": "get",
+                                "value": {
+                                  "op": "local",
+                                  "name": "item"
+                                },
+                                "key": {
+                                  "op": "literal",
+                                  "value": "label"
+                                }
+                              }
+                            }
+                          ],
+                          "key": null
+                        },
+                        {
+                          "kind": "element",
+                          "tag": "button",
+                          "attrs": {
+                            "aria-label": {
+                              "op": "concat",
+                              "parts": [
+                                {
+                                  "op": "literal",
+                                  "value": "Remove "
+                                },
+                                {
+                                  "op": "get",
+                                  "value": {
+                                    "op": "local",
+                                    "name": "item"
+                                  },
+                                  "key": {
+                                    "op": "literal",
+                                    "value": "label"
+                                  }
+                                }
+                              ]
+                            },
+                            "type": {
+                              "op": "literal",
+                              "value": "button"
+                            }
+                          },
+                          "styles": {},
+                          "events": {
+                            "click": {
+                              "name": "RuntimeState.remove",
+                              "args": [
+                                {
+                                  "op": "local",
+                                  "name": "index"
+                                }
+                              ],
+                              "prevent_default": false
+                            }
+                          },
+                          "children": [
+                            {
+                              "kind": "text",
+                              "value": {
+                                "op": "literal",
+                                "value": "Remove"
+                              }
+                            }
+                          ],
+                          "key": null
+                        }
+                      ],
+                      "key": {
+                        "op": "get",
+                        "value": {
+                          "op": "local",
+                          "name": "item"
+                        },
+                        "key": {
+                          "op": "literal",
+                          "value": "id"
+                        }
+                      }
+                    }
+                  }
+                ],
+                "key": null
+              },
+              {
+                "kind": "element",
+                "tag": "p",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "remaining"
+                  }
+                },
+                "styles": {},
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "concat",
+                      "parts": [
+                        {
+                          "op": "state",
+                          "name": "remaining"
+                        },
+                        {
+                          "op": "literal",
+                          "value": " remaining"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "key": null
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "section",
+            "attrs": {},
+            "styles": {
+              "background": {
+                "op": "literal",
+                "value": "white"
+              },
+              "border": {
+                "op": "literal",
+                "value": "1px solid #dbe4dd"
+              },
+              "border-radius": {
+                "op": "literal",
+                "value": "16px"
+              },
+              "display": {
+                "op": "literal",
+                "value": "grid"
+              },
+              "gap": {
+                "op": "literal",
+                "value": "14px"
+              },
+              "padding": {
+                "op": "literal",
+                "value": "24px"
+              }
+            },
+            "events": {},
+            "children": [
+              {
+                "kind": "element",
+                "tag": "h2",
+                "attrs": {},
+                "styles": {},
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "literal",
+                      "value": "Live WebSocket updates"
+                    }
+                  }
+                ],
+                "key": null
+              },
+              {
+                "kind": "element",
+                "tag": "p",
+                "attrs": {
+                  "id": {
+                    "op": "literal",
+                    "value": "progress"
+                  }
+                },
+                "styles": {},
+                "events": {},
+                "children": [
+                  {
+                    "kind": "text",
+                    "value": {
+                      "op": "concat",
+                      "parts": [
+                        {
+                          "op": "literal",
+                          "value": "Progress: "
+                        },
+                        {
+                          "op": "state",
+                          "name": "progress"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "key": null
+              },
+              {
+                "kind": "element",
+                "tag": "div",
+                "attrs": {},
+                "styles": {
+                  "display": {
+                    "op": "literal",
+                    "value": "flex"
+                  },
+                  "flex-wrap": {
+                    "op": "literal",
+                    "value": "wrap"
+                  },
+                  "gap": {
+                    "op": "literal",
+                    "value": "12px"
+                  }
+                },
+                "events": {},
+                "children": [
+                  {
+                    "kind": "element",
+                    "tag": "button",
+                    "attrs": {
+                      "type": {
+                        "op": "literal",
+                        "value": "button"
+                      }
+                    },
+                    "styles": {},
+                    "events": {
+                      "click": {
+                        "name": "RuntimeState.background",
+                        "args": [
+                          {
+                            "op": "literal",
+                            "value": 5
+                          }
+                        ],
+                        "prevent_default": false
+                      }
+                    },
+                    "children": [
+                      {
+                        "kind": "text",
+                        "value": {
+                          "op": "literal",
+                          "value": "Start background task"
+                        }
+                      }
+                    ],
+                    "key": null
+                  },
+                  {
+                    "kind": "element",
+                    "tag": "button",
+                    "attrs": {
+                      "type": {
+                        "op": "literal",
+                        "value": "button"
+                      }
+                    },
+                    "styles": {},
+                    "events": {
+                      "click": {
+                        "name": "RuntimeState.stream",
+                        "args": [
+                          {
+                            "op": "literal",
+                            "value": 3
+                          }
+                        ],
+                        "prevent_default": false
+                      }
+                    },
+                    "children": [
+                      {
+                        "kind": "text",
+                        "value": {
+                          "op": "literal",
+                          "value": "Stream +3"
+                        }
+                      }
+                    ],
+                    "key": null
+                  },
+                  {
+                    "kind": "element",
+                    "tag": "button",
+                    "attrs": {
+                      "type": {
+                        "op": "literal",
+                        "value": "button"
+                      }
+                    },
+                    "styles": {},
+                    "events": {
+                      "click": {
+                        "name": "RuntimeState.chain",
+                        "args": [],
+                        "prevent_default": false
+                      }
+                    },
+                    "children": [
+                      {
+                        "kind": "text",
+                        "value": {
+                          "op": "literal",
+                          "value": "Chain +5"
+                        }
+                      }
+                    ],
+                    "key": null
+                  }
+                ],
+                "key": null
+              },
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "Open another tab to see shared session updates arrive automatically."
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "a",
+            "attrs": {
+              "href": {
+                "op": "literal",
+                "value": "/about"
+              }
+            },
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "About"
+                }
+              }
+            ],
+            "key": null
+          }
+        ],
+        "key": null
+      }
+    },
+    {
+      "route": "/about",
+      "title": "About · Nano",
+      "tree": {
+        "kind": "element",
+        "tag": "section",
+        "attrs": {},
+        "styles": {
+          "background": {
+            "op": "literal",
+            "value": "white"
+          },
+          "border": {
+            "op": "literal",
+            "value": "1px solid #dbe4dd"
+          },
+          "border-radius": {
+            "op": "literal",
+            "value": "16px"
+          },
+          "display": {
+            "op": "literal",
+            "value": "grid"
+          },
+          "gap": {
+            "op": "literal",
+            "value": "14px"
+          },
+          "padding": {
+            "op": "literal",
+            "value": "24px"
+          }
+        },
+        "events": {},
+        "children": [
+          {
+            "kind": "element",
+            "tag": "h2",
+            "attrs": {},
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "Rust owns the runtime"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "p",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "about-count"
+              }
+            },
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "concat",
+                  "parts": [
+                    {
+                      "op": "literal",
+                      "value": "Current counter: "
+                    },
+                    {
+                      "op": "state",
+                      "name": "count"
+                    }
+                  ]
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "a",
+            "attrs": {
+              "href": {
+                "op": "literal",
+                "value": "/"
+              }
+            },
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "Back"
+                }
+              }
+            ],
+            "key": null
+          }
+        ],
+        "key": null
+      }
+    },
+    {
+      "route": "/item/[id]",
+      "title": "Task · Nano",
+      "tree": {
+        "kind": "element",
+        "tag": "section",
+        "attrs": {},
+        "styles": {
+          "background": {
+            "op": "literal",
+            "value": "white"
+          },
+          "border": {
+            "op": "literal",
+            "value": "1px solid #dbe4dd"
+          },
+          "border-radius": {
+            "op": "literal",
+            "value": "16px"
+          },
+          "display": {
+            "op": "literal",
+            "value": "grid"
+          },
+          "gap": {
+            "op": "literal",
+            "value": "14px"
+          },
+          "padding": {
+            "op": "literal",
+            "value": "24px"
+          }
+        },
+        "events": {},
+        "children": [
+          {
+            "kind": "element",
+            "tag": "h2",
+            "attrs": {},
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "Task details"
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "p",
+            "attrs": {
+              "id": {
+                "op": "literal",
+                "value": "task-id"
+              }
+            },
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "concat",
+                  "parts": [
+                    {
+                      "op": "literal",
+                      "value": "Task ID: "
+                    },
+                    {
+                      "op": "get",
+                      "value": {
+                        "op": "get",
+                        "value": {
+                          "op": "state",
+                          "name": "_route"
+                        },
+                        "key": {
+                          "op": "literal",
+                          "value": "params"
+                        }
+                      },
+                      "key": {
+                        "op": "literal",
+                        "value": "id"
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "key": null
+          },
+          {
+            "kind": "element",
+            "tag": "a",
+            "attrs": {
+              "href": {
+                "op": "literal",
+                "value": "/"
+              }
+            },
+            "styles": {},
+            "events": {},
+            "children": [
+              {
+                "kind": "text",
+                "value": {
+                  "op": "literal",
+                  "value": "Back"
+                }
+              }
+            ],
+            "key": null
+          }
+        ],
+        "key": null
+      }
+    }
+  ]
+}

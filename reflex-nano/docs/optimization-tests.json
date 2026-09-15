@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "browser": "133.0.6943.0",
+  "checks": [
+    "SSR element identity, adjacent/empty text, early input, constant folding, nested lexical scopes",
+    "Dependency boundaries skip unrelated rows and activate empty conditional fragments",
+    "Keyed reorder keeps DOM nodes, focus, selection and refreshes event index scopes",
+    "List removal/restoration and nested list replacement",
+    "Debounce final arguments, leading throttle without trailing replay, temporal discard, propagation",
+    "Rehydration retains authoritative state and event bindings"
+  ],
+  "initial_stats": {
+    "hydratedNodes": 66,
+    "createdNodes": 0,
+    "delegatedListeners": 8,
+    "updates": 1,
+    "last": {
+      "visited": 72,
+      "skipped": 0,
+      "domWrites": 3,
+      "milliseconds": 1.199999999254942
+    }
+  },
+  "counter_update_stats": {
+    "visited": 10,
+    "skipped": 16,
+    "domWrites": 8,
+    "milliseconds": 0.4000000022351742
+  },
+  "page_errors": []
+}

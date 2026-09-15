@@ -1,0 +1,19 @@
+{
+  "version": "0.4.0",
+  "clean_wheel_install": true,
+  "runtime_contract": [
+    "initial state",
+    "sync and async events",
+    "computed values",
+    "controlled input",
+    "form payload",
+    "nested list mutation",
+    "generator checkpoints delivered before completion",
+    "background push with foreground events",
+    "returned event chain",
+    "reconnect state retained",
+    "session isolation"
+  ],
+  "python_dependencies_required": [],
+  "native_api_passed": true
+}

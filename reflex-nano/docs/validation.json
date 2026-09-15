@@ -1,0 +1,390 @@
+{
+  "version": "0.4.0",
+  "validated_date": "2026-09-15T11:33:27Z",
+  "rust_tests_passed": 10,
+  "python_tests_passed": 19,
+  "browser": {
+    "html": {
+      "passed": true,
+      "renderer": "html",
+      "browser": "133.0.6943.0",
+      "checks": [
+        {
+          "host": "Python bindings",
+          "passed": [
+            "WebSocket transport without HTTP event requests",
+            "sync and deferred Rust events",
+            "computed values and conditionals",
+            "controlled inputs, focus and selection",
+            "form validation and rollback",
+            "keyed list identity and nested mutation",
+            "dynamic routes, history and refresh",
+            "session isolation and escaping",
+            "expression parity",
+            "background push and streaming",
+            "server-side event chains",
+            "reconnect state retention",
+            "cross-route tab synchronization",
+            "concurrent same-session events",
+            "desktop and mobile layout"
+          ]
+        },
+        {
+          "host": "Rust executable",
+          "passed": [
+            "WebSocket transport without HTTP event requests",
+            "sync and deferred Rust events",
+            "computed values and conditionals",
+            "controlled inputs, focus and selection",
+            "form validation and rollback",
+            "keyed list identity and nested mutation",
+            "dynamic routes, history and refresh",
+            "session isolation and escaping",
+            "expression parity",
+            "background push and streaming",
+            "server-side event chains",
+            "reconnect state retention",
+            "cross-route tab synchronization",
+            "concurrent same-session events",
+            "desktop and mobile layout"
+          ]
+        }
+      ],
+      "page_errors": []
+    },
+    "react": {
+      "passed": true,
+      "renderer": "react",
+      "browser": "133.0.6943.0",
+      "checks": [
+        {
+          "host": "Python bindings",
+          "passed": [
+            "WebSocket transport without HTTP event requests",
+            "sync and deferred Rust events",
+            "computed values and conditionals",
+            "controlled inputs, focus and selection",
+            "form validation and rollback",
+            "keyed list identity and nested mutation",
+            "dynamic routes, history and refresh",
+            "session isolation and escaping",
+            "expression parity",
+            "background push and streaming",
+            "server-side event chains",
+            "reconnect state retention",
+            "cross-route tab synchronization",
+            "concurrent same-session events",
+            "desktop and mobile layout"
+          ]
+        },
+        {
+          "host": "Rust executable",
+          "passed": [
+            "WebSocket transport without HTTP event requests",
+            "sync and deferred Rust events",
+            "computed values and conditionals",
+            "controlled inputs, focus and selection",
+            "form validation and rollback",
+            "keyed list identity and nested mutation",
+            "dynamic routes, history and refresh",
+            "session isolation and escaping",
+            "expression parity",
+            "background push and streaming",
+            "server-side event chains",
+            "reconnect state retention",
+            "cross-route tab synchronization",
+            "concurrent same-session events",
+            "desktop and mobile layout"
+          ]
+        }
+      ],
+      "page_errors": []
+    }
+  },
+  "optimizations": {
+    "html": {
+      "passed": true,
+      "renderer": "html",
+      "browser": "133.0.6943.0",
+      "checks": [
+        "SSR element identity, adjacent/empty text, early input, constant folding, nested lexical scopes",
+        "Dependency boundaries skip unrelated rows and activate empty conditional fragments",
+        "Keyed reorder keeps DOM nodes, focus, selection and refreshes event index scopes",
+        "List removal/restoration and nested list replacement",
+        "Debounce final arguments, leading throttle without trailing replay, temporal discard, propagation",
+        "Rehydration retains authoritative state and event bindings"
+      ],
+      "initial_stats": {
+        "hydratedNodes": 66,
+        "createdNodes": 0,
+        "delegatedListeners": 8,
+        "updates": 1,
+        "last": {
+          "visited": 72,
+          "skipped": 0,
+          "domWrites": 3,
+          "milliseconds": 1.8999999985098839
+        }
+      },
+      "counter_update_stats": {
+        "visited": 10,
+        "skipped": 16,
+        "domWrites": 8,
+        "milliseconds": 0.3999999985098839
+      },
+      "page_errors": []
+    },
+    "react": {
+      "passed": true,
+      "renderer": "react",
+      "browser": "133.0.6943.0",
+      "checks": [
+        "SSR element identity, adjacent/empty text, early input, constant folding, nested lexical scopes",
+        "Dependency boundaries skip unrelated rows and activate empty conditional fragments",
+        "Keyed reorder keeps DOM nodes, focus, selection and refreshes event index scopes",
+        "List removal/restoration and nested list replacement",
+        "Debounce final arguments, leading throttle without trailing replay, temporal discard, propagation",
+        "Rehydration retains authoritative state and event bindings"
+      ],
+      "initial_stats": {
+        "renderer": "react",
+        "reactVersion": "19.2.8",
+        "hydration": "hydrateRoot",
+        "commits": 1,
+        "visited": 44,
+        "skipped": 0,
+        "recoverableErrors": [],
+        "errors": []
+      },
+      "counter_update_stats": {
+        "renderer": "react",
+        "reactVersion": "19.2.8",
+        "hydration": "hydrateRoot",
+        "commits": 2,
+        "visited": 51,
+        "skipped": 16,
+        "recoverableErrors": [],
+        "errors": []
+      },
+      "page_errors": []
+    }
+  },
+  "react_components": {
+    "passed": true,
+    "react": "19.2.8",
+    "browser": "133.0.6943.0",
+    "checks": [
+      "HTML route downloads no React",
+      "Renderer transition retains Rust session",
+      "Radix Button, TextField, controlled Switch and Select",
+      "Controlled Dialog and Rust callback from portal outside root",
+      "Custom React hooks survive Rust state updates",
+      "Reload retains native state; native HTML fallback route"
+    ],
+    "errors": [],
+    "stats": {
+      "renderer": "react",
+      "reactVersion": "19.2.8",
+      "hydration": "hydrateRoot",
+      "commits": 1,
+      "visited": 28,
+      "skipped": 0,
+      "recoverableErrors": [],
+      "errors": []
+    }
+  },
+  "clean_wheel_install": {
+    "version": "0.4.0",
+    "clean_wheel_install": true,
+    "runtime_contract": [
+      "initial state",
+      "sync and async events",
+      "computed values",
+      "controlled input",
+      "form payload",
+      "nested list mutation",
+      "generator checkpoints delivered before completion",
+      "background push with foreground events",
+      "returned event chain",
+      "reconnect state retained",
+      "session isolation"
+    ],
+    "python_dependencies_required": [],
+    "native_api_passed": true
+  },
+  "build": {
+    "version": "0.4.0",
+    "date_utc": "2026-09-15T11:30:45Z",
+    "rustc": "rustc 1.97.0 (2d8144b78 2026-07-07)",
+    "target_was_empty": true,
+    "jobs": 1,
+    "network": "offline",
+    "profile": "release; thin LTO; one codegen unit",
+    "excluded": [
+      "toolchain installation",
+      "registry downloads",
+      "OS filesystem cache flush",
+      "prebuilt React bundle; npm run build:frontend measured separately"
+    ],
+    "runs": [
+      {
+        "stage": "clean-native",
+        "command": [
+          "cargo",
+          "build",
+          "--release",
+          "--locked",
+          "--offline",
+          "-j",
+          "1",
+          "-p",
+          "reflex-nano",
+          "--example",
+          "runner"
+        ],
+        "seconds": 83.371429834,
+        "returncode": 0
+      },
+      {
+        "stage": "cached-native",
+        "command": [
+          "cargo",
+          "build",
+          "--release",
+          "--locked",
+          "--offline",
+          "-j",
+          "1",
+          "-p",
+          "reflex-nano",
+          "--example",
+          "runner"
+        ],
+        "seconds": 0.062808976,
+        "returncode": 0
+      },
+      {
+        "stage": "python-wheel-after-native",
+        "command": [
+          "/workspace/scratch/ec6b9a5f445e/reflex-nano/../.venv/bin/maturin",
+          "build",
+          "--release",
+          "--locked",
+          "--offline",
+          "-j",
+          "1",
+          "--compatibility",
+          "manylinux_2_34",
+          "--interpreter",
+          "/workspace/scratch/ec6b9a5f445e/reflex-nano/../.venv/bin/python",
+          "--out",
+          "/workspace/scratch/ec6b9a5f445e/reflex-nano/dist"
+        ],
+        "seconds": 41.465389007,
+        "returncode": 0
+      }
+    ],
+    "target_directory": "/tmp/nano-build-w1ow0wk3",
+    "sha256": {
+      "dist/nano": "61a18c35a4f2b9b08d5b54306170855c6f92ef1e3f03382406013ca27952ae5a",
+      "Cargo.lock": "38cad9b39dea889cd0f22d44bd998856303a85dd142002ace661b2173ad361ba",
+      "Cargo.toml": "aaa3e3c9ce36c8fee5689011d6f93a0b9fdfea4fc485d6f3899f76d9f29376be",
+      "rust-toolchain.toml": "e1e35601df56bce6ac4edfc8f7b1abeed0a5b931f1c6f5d157b1433b6875f6aa",
+      "dist/reflex_nano-0.4.0-cp312-cp312-manylinux_2_34_x86_64.whl": "6a0954786dc8c028708d2875881c1954f82260dcc650bd4a0bfdac7ce92adc34",
+      "crates/nano-core/build.rs": "d9d184a6bfc0bddb56f8a41ee98e903524e746989aeb42570960ba4edda23cf9",
+      "crates/nano-core/src/demo.rs": "e01502f9a7572fc2bca865dae241ca447a653cb845d0d5b38b36990eacf398ae",
+      "crates/nano-core/src/model.rs": "958d39560cb80801d7c32c709535cc6a89d13e86ef7976169a3d5b57794e92fc",
+      "crates/nano-core/src/assets.rs": "1a99bdd26a0e040d48c0aad1dd22639820f4ff58d7736b554f34edc3867009db",
+      "crates/nano-core/src/lib.rs": "8e85ce4a6d8dcf41917299719d5c5d27c6259db64a084172e2764b9957a4b794",
+      "crates/nano-core/src/state.rs": "21d4c1bea88ac331a2ecf861b47491a3d2b6156e54157395abbc834295bc071f",
+      "crates/nano-core/src/websocket.rs": "45c82ad3568dc13fb0a9eeb6ab3b0d8f6e089e7c0425de5adc31c8f77b7ebb95",
+      "crates/nano-core/src/tests.rs": "a8376782683cd6bc299d7c5ef53fd4aacae816a3459e05028814b9b00d57949d",
+      "crates/nano-core/src/runtime.rs": "e570587fdb186f4287d6dd2c6d9a2a01d29942b9a58fe1f84e63e36c52bf47b9",
+      "crates/nano-core/src/server.rs": "c82f8d3b23d3aab63532cbcf875bd9207380f9661268111901df533fc46b44e2",
+      "crates/nano-core/src/render.rs": "926f0e897762b66d478b5ed361d834c1dd3ad5096f7d7bb72b291e79f0100e45",
+      "crates/nano-core/src/frontend.rs": "8db5391960264223b33fa358a82d7a5114470f981b056f2356a5038496c5afde",
+      "crates/nano-python/src/lib.rs": "6bac21e194fbe62626b70a4c7194e34b98bb37a0f185f5c7505f72fb57787644",
+      "crates/nano-core/src/client.js": "84c4ca995cedf6c952286131906c80bd10ad6088802a54b43cd2fc9efba0dd83"
+    },
+    "completed": true
+  },
+  "frontend_build": {
+    "version": "0.4.0",
+    "command": [
+      "npm",
+      "run",
+      "build:frontend"
+    ],
+    "runs": [
+      {
+        "run": 0,
+        "seconds": 0.9011999540016404
+      },
+      {
+        "run": 1,
+        "seconds": 0.6169832409941591
+      },
+      {
+        "run": 2,
+        "seconds": 0.5673238039962598
+      }
+    ],
+    "dependency_installation_excluded": true,
+    "byte_identical_to_tested_embedded_assets": true,
+    "sha256": {
+      "components-7CdcbHJ9.css": "bf09c7832cd1171a8b74413c223a31c476dd037da67f12f00bb0cef2dfd38a03",
+      "components-DpRbI6sD.js": "09b4a02a3bff5242fbe33961842bdb8a59b1831dc9d082806bcb482a2c01ea2e",
+      "react.js": "a86b94b460e774ce3916c5e9dbf4d610c317abef5be823a2ce563b98c90b12f6",
+      "registry.json": "081b84925dd64ac235c2e8f70bcce48a999d29550edf1603ef8898a9abb5f155",
+      "sources.json": "2644bfeed0239e34b1e330d21756ae287d2996c703bb94c333092ea2fa15c825",
+      ".vite/license.md": "332d574ce5df07470c322250260246825836af3366d7d954e56d37b0cecdcf12"
+    }
+  },
+  "lifecycle": {
+    "version": "0.4.0",
+    "validated_navigations": 144,
+    "errors": [],
+    "median_1000": {
+      "nano": {
+        "initial": {
+          "ready_ms": 89.50000000372529,
+          "first_event_ms": 1.75
+        },
+        "first_reload": {
+          "ready_ms": 85.69999999925494,
+          "first_event_ms": 1.25
+        }
+      },
+      "nano_react": {
+        "initial": {
+          "ready_ms": 130.54999999701977,
+          "first_event_ms": 5.050000000745058
+        },
+        "first_reload": {
+          "ready_ms": 112.79999999701977,
+          "first_event_ms": 3.300000000745058
+        }
+      },
+      "nano_react_python": {
+        "initial": {
+          "ready_ms": 127.25,
+          "first_event_ms": 4.350000001490116
+        },
+        "first_reload": {
+          "ready_ms": 107.90000000223517,
+          "first_event_ms": 2.900000002235174
+        }
+      },
+      "reflex": {
+        "initial": {
+          "ready_ms": 159.84999999403954,
+          "first_event_ms": 10.649999998509884
+        },
+        "first_reload": {
+          "ready_ms": 121.64999999850988,
+          "first_event_ms": 7.100000001490116
+        }
+      }
+    }
+  }
+}

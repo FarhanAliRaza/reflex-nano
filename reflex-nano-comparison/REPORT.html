@@ -1,0 +1,1324 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nano / Reflex full comparison</title><style>html{font-family:ui-sans-serif,system-ui,sans-serif;color:#182e3c;background:#eef3f6;line-height:1.65}body{margin:0}main{max-width:1200px;margin:auto;padding:45px 5vw 70px;background:white}h1{font-size:2.3rem;line-height:1.2;color:#123d52}h2{margin-top:3rem;border-top:2px solid #cbe0e8;padding-top:1rem}h3{margin-top:2rem}table{display:block;overflow:auto;width:100%;border-collapse:collapse;font-size:.85rem;font-variant-numeric:tabular-nums;margin:1.5rem 0}th,td{border:1px solid #d1dee5;padding:8px 11px;vertical-align:top;text-align:left}th{background:#163f54;color:white}tr:nth-child(even){background:#f0f6f8}a{color:#066f93}code,pre{background:#eef3f6}code{padding:2px 4px}pre{overflow:auto;padding:15px}nav{background:#163f54;color:white;padding:12px 5vw;display:flex;gap:20px;position:sticky;top:0}nav a{color:white;text-decoration:none}button{margin-left:auto;border:0;border-radius:5px;padding:7px 13px;cursor:pointer}@media(max-width:650px){main{padding:25px 16px}h1{font-size:1.8rem}table{font-size:.75rem}nav{position:static;flex-wrap:wrap}}@media print{nav{display:none}main{padding:0}table{display:table;font-size:8px}h2,h3{break-after:avoid}tr{break-inside:avoid}}</style><nav><b>NANO 0.4 / REFLEX 0.9.11</b><a href="summary.json">Summary JSON</a><a href="backend-summary.csv">Backend CSV</a><a href="browser-summary.csv">Browser CSV</a><button onclick="print()">Print / PDF</button></nav><main><h1>Reflex Nano 0.4 versus Reflex: full comparison</h1>
+<p><strong>Nano wins most clearly on app preparation, server startup, server memory and backend events. Direct HTML also gives the lightest browser path. Nano React is not uniformly faster or smaller: large list updates are slower than Reflex, and retained JavaScript heap is higher.</strong></p>
+<p>This report compares the exact <strong>Nano 0.4.0</strong> release with <strong>Reflex 0.9.11</strong>. It combines the preserved <strong>144-navigation</strong> release experiment with <strong>148,500 fresh backend events</strong> and <strong>90 additional browser navigations</strong> for repeated updates and memory. No Nano 0.3 performance numbers are attributed to 0.4.</p>
+<p>Nano's schema, authoritative state, event programs, computed values and render-plan compiler are Rust. PyO3 exposes native objects with no Python event callbacks. Exported applications run without Python. Native Rust closures extend the bounded declarative programs; those programs execute through the Rust interpreter, rather than being JIT-compiled to separate machine code per application. Browser DOM operations, React, public snapshots, input drafts and local hooks run in JavaScript.</p>
+<p>Reflex executes state and application handlers in Python and compiles UI definitions to React. The tested version uses React Router/Vite and Granian ASGI; some public architecture documentation retains descriptions of older stack layers. The installed version and recorded dependencies govern this experiment. <a href="https://reflex.dev/docs/advanced-onboarding/how-reflex-works/">Reflex architecture</a>.</p>
+<h2>How to read the report</h2>
+<p>The release section retains all compilation, startup, load, reload, first-event and transfer measurements. The next sections add current-version backend throughput, repeated browser mutations, memory and feature coverage. These datasets are not pooled: the memory sweep forces garbage collection and runs additional events between initial load and reload.</p>
+<p>The roughly 29 ms Nano app-preparation figure uses its <strong>prebuilt engine through Python bindings and exported native definitions</strong>. Editing native Rust application source requires Cargo compilation. The roughly 63 ms cached Cargo figure means <strong>no source changed</strong>, not an incremental edit. Custom Rust app rebuilds and source-edit HMR were not measured.</p>
+<p>All tests are local loopback experiments in a shared container. Results are specific to these fixtures, versions and configurations; they do not establish universal speedups or complete Reflex compatibility.</p>
+<h2>Release lifecycle measurements</h2>
+<p>Measured 2026-09-15T11:34:07Z using Nano 0.4.0 and production Reflex
+0.9.11. All table values are milliseconds
+unless marked otherwise. Cells report <strong>median [minimum–maximum]</strong>.</p>
+<p>For 1,000 rows, Nano React/Rust reached complete state + hydrated DOM in
+<strong>130.5 ms initially</strong> and
+<strong>112.8 ms on first reload</strong>.
+Reflex took 159.8 and 121.6 ms:
+ratios of 1.22× and
+1.08×, respectively.
+Direct HTML remains the lighter option: 89.5 and
+85.7 ms for the same conditions.
+At 10,000 rows the React difference narrows: Nano React/Rust was
+752.3 ms initially and 731.5 ms on reload,
+versus Reflex's 799.2 and 708.7 ms.
+The reload median is slightly worse, with overlapping observed ranges. React
+mode does not deliver a consistent large-load hydration speedup in this test.
+These are local fixture results, not universal framework or language speedups.</p>
+<h3>What was timed and verified</h3>
+<p>All <strong>144 navigations passed</strong> across 100, 1,000 and 10,000 rows.
+Each row has the same ID, label, done value and working toggle button. There is
+no list virtualization. The complete public state must arrive over a real
+WebSocket; the probe validates every item and every rendered row. Nano 0.4 must
+also report <code>ready</code> after its renderer commits, and be connected. React mode
+must use real <code>hydrateRoot</code>, with no recorded recoverable hydration errors.
+Reflex must report its framework hydration condition. The initial click changes
+both the counter and computed double. Reload retains that state; another click
+and the last row toggle must work. Zero recorded page errors.</p>
+<p>One workload runs at a time, with no compiler overlapping browser timings.
+There are 3 fresh server/browser processes per framework/size,
+2 fresh contexts per process: 6 initial
+loads and six first reloads per cell. Trials use deterministic randomized order.
+Initial loads have fresh browser HTTP caches and sessions. Reload retains them.
+Reload means document reload, not source-edit HMR or restarting the server.
+Small sample counts and shared-container variability limit fine comparisons.</p>
+<p>The Rust and PyO3 React hosts run the same native manifest/backend and bundled
+React adapter. PyO3 releases the GIL while Rust serves. All schemas, authoritative
+state, computed values and event programs are native in both hosts.</p>
+<h3>Complete state and hydrated DOM, from navigation start</h3>
+<table>
+<thead>
+<tr>
+<th>Rows</th>
+<th>Phase</th>
+<th>Nano HTML / Rust</th>
+<th>Nano React / Rust</th>
+<th>Nano React / PyO3</th>
+<th>Reflex</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100</td>
+<td>initial</td>
+<td>40.7 [32.7–51.2]</td>
+<td>60.6 [56.5–69.2]</td>
+<td>60.7 [51.7–64.6]</td>
+<td>97.7 [80.0–131.3]</td>
+</tr>
+<tr>
+<td>100</td>
+<td>first_reload</td>
+<td>34.1 [30.9–36.2]</td>
+<td>42.9 [38.8–92.1]</td>
+<td>38.8 [36.7–43.7]</td>
+<td>59.4 [54.7–77.2]</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>initial</td>
+<td>89.5 [83.9–103.1]</td>
+<td>130.5 [116.1–146.1]</td>
+<td>127.2 [114.1–142.9]</td>
+<td>159.8 [137.9–213.5]</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>first_reload</td>
+<td>85.7 [84.1–91.8]</td>
+<td>112.8 [103.3–118.2]</td>
+<td>107.9 [103.9–123.4]</td>
+<td>121.6 [108.7–157.8]</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>initial</td>
+<td>589.6 [573.9–783.9]</td>
+<td>752.3 [696.8–771.8]</td>
+<td>724.1 [699.4–786.4]</td>
+<td>799.2 [733.1–854.2]</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>first_reload</td>
+<td>617.2 [582.9–1022.0]</td>
+<td>731.5 [689.7–846.9]</td>
+<td>739.5 [675.7–1013.2]</td>
+<td>708.7 [634.8–745.3]</td>
+</tr>
+</tbody>
+</table>
+<p>This condition includes document delivery, parsing, JavaScript startup, WebSocket
+state transfer and hydration. It is not an isolated React hydration function
+timer. In particular, Nano also does Rust SSR/compression on the request path.</p>
+<p>The 1,000-row median breakdown below separates these milestones. Paint-ready
+waits two animation frames after the validated ready condition.</p>
+<table>
+<thead>
+<tr>
+<th>Framework</th>
+<th>Phase</th>
+<th>TTFB</th>
+<th>Response end</th>
+<th>Full WS state</th>
+<th>Ready</th>
+<th>Paint-ready</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nano HTML / Rust</td>
+<td>initial</td>
+<td>2.4</td>
+<td>4.1</td>
+<td>87.3</td>
+<td>89.5</td>
+<td>109.4</td>
+</tr>
+<tr>
+<td>Nano HTML / Rust</td>
+<td>first_reload</td>
+<td>1.8</td>
+<td>4.0</td>
+<td>84.1</td>
+<td>85.7</td>
+<td>106.5</td>
+</tr>
+<tr>
+<td>Nano React / Rust</td>
+<td>initial</td>
+<td>2.5</td>
+<td>3.9</td>
+<td>127.9</td>
+<td>130.5</td>
+<td>158.8</td>
+</tr>
+<tr>
+<td>Nano React / Rust</td>
+<td>first_reload</td>
+<td>1.8</td>
+<td>3.2</td>
+<td>110.9</td>
+<td>112.8</td>
+<td>135.3</td>
+</tr>
+<tr>
+<td>Nano React / PyO3</td>
+<td>initial</td>
+<td>2.5</td>
+<td>3.9</td>
+<td>125.2</td>
+<td>127.2</td>
+<td>153.6</td>
+</tr>
+<tr>
+<td>Nano React / PyO3</td>
+<td>first_reload</td>
+<td>1.8</td>
+<td>3.5</td>
+<td>106.3</td>
+<td>107.9</td>
+<td>134.6</td>
+</tr>
+<tr>
+<td>Reflex</td>
+<td>initial</td>
+<td>5.1</td>
+<td>6.6</td>
+<td>148.3</td>
+<td>159.8</td>
+<td>183.4</td>
+</tr>
+<tr>
+<td>Reflex</td>
+<td>first_reload</td>
+<td>2.6</td>
+<td>3.9</td>
+<td>108.0</td>
+<td>121.6</td>
+<td>140.4</td>
+</tr>
+</tbody>
+</table>
+<h3>First event: click to observed DOM update</h3>
+<p>Programmatic DOM click, with both count and computed double validated. This
+includes WebSocket transit, Rust/Python backend execution and browser update.</p>
+<table>
+<thead>
+<tr>
+<th>Rows</th>
+<th>Phase</th>
+<th>Nano HTML / Rust</th>
+<th>Nano React / Rust</th>
+<th>Nano React / PyO3</th>
+<th>Reflex</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100</td>
+<td>initial</td>
+<td>1.7 [1.3–6.0]</td>
+<td>4.5 [4.1–5.3]</td>
+<td>4.5 [3.9–6.4]</td>
+<td>4.7 [4.1–7.1]</td>
+</tr>
+<tr>
+<td>100</td>
+<td>first_reload</td>
+<td>1.2 [1.0–1.2]</td>
+<td>1.9 [1.9–2.8]</td>
+<td>1.9 [1.6–2.8]</td>
+<td>3.4 [3.2–7.1]</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>initial</td>
+<td>1.8 [1.7–2.0]</td>
+<td>5.1 [4.3–6.1]</td>
+<td>4.4 [4.0–5.5]</td>
+<td>10.6 [9.6–15.2]</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>first_reload</td>
+<td>1.2 [1.1–4.8]</td>
+<td>3.3 [2.7–4.6]</td>
+<td>2.9 [2.6–5.1]</td>
+<td>7.1 [6.4–8.5]</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>initial</td>
+<td>1.9 [1.8–2.5]</td>
+<td>7.8 [7.5–9.8]</td>
+<td>8.0 [7.6–8.8]</td>
+<td>48.1 [34.4–56.5]</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>first_reload</td>
+<td>1.1 [1.0–5.8]</td>
+<td>8.6 [8.5–96.3]</td>
+<td>8.1 [6.7–9.3]</td>
+<td>36.3 [32.6–39.2]</td>
+</tr>
+</tbody>
+</table>
+<h3>Per-application preparation / compilation</h3>
+<p>3 fresh process trials per framework/size, with dependencies
+installed. Process startup/shutdown is included. Nano imports bindings,
+constructs/exports native definitions, validates/builds the app and renders all
+rows using the prebuilt engine. Both Nano modes use a prebuilt generic adapter;
+there is no per-app JavaScript bundle build. Reflex runs its real Python
+compiler, production React Router/Vite build, route prerendering and compression.
+Reflex's stock frontend initializer normalizes package.json outside the timer
+to preserve its existing dependency-installation cache.</p>
+<table>
+<thead>
+<tr>
+<th>Rows</th>
+<th>Nano HTML</th>
+<th>Nano React</th>
+<th>Reflex total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100</td>
+<td>24.3 [23.0–29.8]</td>
+<td>25.0 [23.8–26.0]</td>
+<td>2611.7 [2329.7–2666.0]</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>28.5 [28.1–34.2]</td>
+<td>28.8 [26.6–30.3]</td>
+<td>2746.8 [2595.4–2896.8]</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>56.9 [53.5–60.5]</td>
+<td>59.6 [54.6–59.9]</td>
+<td>3020.7 [2812.7–3219.4]</td>
+</tr>
+</tbody>
+</table>
+<p>This compares app preparation with those architectures; it is not a Rust versus
+Python compiler benchmark. Changing the registered React package set or adapter
+requires a separate frontend and Rust build. Those costs are measured below.</p>
+<h3>Framework build costs (seconds)</h3>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Seconds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>clean-native</td>
+<td>83.371</td>
+</tr>
+<tr>
+<td>cached-native</td>
+<td>0.063</td>
+</tr>
+<tr>
+<td>python-wheel-after-native</td>
+<td>41.465</td>
+</tr>
+<tr>
+<td>React frontend build, median of 3</td>
+<td>0.617</td>
+</tr>
+</tbody>
+</table>
+<p>The native source build starts from an empty target directory with cached Cargo
+sources, offline, one job, release ThinLTO. The wheel build follows that native
+build. React bundle timings use installed pinned npm dependencies and reproduce
+the exact tested asset bytes. Toolchain/dependency installation and operating
+system filesystem cache flushing are excluded. These build costs are not hidden
+inside the much smaller per-app preparation numbers.</p>
+<h3>Cold server process startup</h3>
+<p>Spawn to successful HTTP probe; no browser launch or application compilation.
+Native startup includes manifest loading, plan construction and relevant asset
+compression; Reflex includes backend imports and its production static server.
+Probes use the native static asset or Reflex <code>/ping</code> endpoint. A 5 ms probe
+interval and Node/fetch overhead make short timings coarse.</p>
+<table>
+<thead>
+<tr>
+<th>Rows</th>
+<th>Nano HTML / Rust</th>
+<th>Nano React / Rust</th>
+<th>Nano React / PyO3</th>
+<th>Reflex</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100</td>
+<td>27.6 [22.8–28.2]</td>
+<td>65.1 [62.6–71.5]</td>
+<td>90.6 [80.8–106.8]</td>
+<td>484.2 [471.5–540.6]</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>20.9 [19.8–22.6]</td>
+<td>62.0 [61.3–69.5]</td>
+<td>87.8 [82.3–90.8]</td>
+<td>487.3 [472.6–792.2]</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>36.1 [35.8–46.2]</td>
+<td>102.9 [85.1–105.8]</td>
+<td>119.2 [110.8–119.7]</td>
+<td>679.4 [603.2–686.2]</td>
+</tr>
+</tbody>
+</table>
+<h3>Transfer sizes and React component costs</h3>
+<p>Median initial-load KiB. HTTP transfer uses Resource Timing (including its header
+estimate); decoded bytes are decompressed bodies. WebSocket bytes are received
+application payloads through readiness, excluding framing.</p>
+<table>
+<thead>
+<tr>
+<th>Rows</th>
+<th>Framework</th>
+<th>HTTP transferred KiB</th>
+<th>HTTP decoded KiB</th>
+<th>WS received KiB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100</td>
+<td>Nano HTML / Rust</td>
+<td>10.4</td>
+<td>45.2</td>
+<td>4.2</td>
+</tr>
+<tr>
+<td>100</td>
+<td>Nano React / Rust</td>
+<td>69.7</td>
+<td>233.1</td>
+<td>4.2</td>
+</tr>
+<tr>
+<td>100</td>
+<td>Nano React / PyO3</td>
+<td>69.7</td>
+<td>233.1</td>
+<td>4.2</td>
+</tr>
+<tr>
+<td>100</td>
+<td>Reflex</td>
+<td>162.4</td>
+<td>514.4</td>
+<td>6.4</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>Nano HTML / Rust</td>
+<td>21.8</td>
+<td>231.5</td>
+<td>41.9</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>Nano React / Rust</td>
+<td>81.2</td>
+<td>419.4</td>
+<td>41.9</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>Nano React / PyO3</td>
+<td>81.2</td>
+<td>419.4</td>
+<td>41.9</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>Reflex</td>
+<td>174.0</td>
+<td>692.8</td>
+<td>44.2</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>Nano HTML / Rust</td>
+<td>123.5</td>
+<td>2129.9</td>
+<td>437.5</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>Nano React / Rust</td>
+<td>182.6</td>
+<td>2317.9</td>
+<td>437.5</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>Nano React / PyO3</td>
+<td>182.6</td>
+<td>2317.9</td>
+<td>437.5</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>Reflex</td>
+<td>266.9</td>
+<td>2512.2</td>
+<td>439.7</td>
+</tr>
+</tbody>
+</table>
+<p>The timed fixture uses native HTML elements in both React frontends. Radix is
+tested functionally in a separate fixture; its component/CSS chunk is lazy and
+is not downloaded by this benchmark. Direct HTML pages download no React.
+The following standalone assets show the additional cost when a page uses the
+bundled component registry. Gzip sizes here use Python gzip; actual wire bytes
+above come from the Rust server.</p>
+<table>
+<thead>
+<tr>
+<th>React asset</th>
+<th>Decoded KiB</th>
+<th>Gzip KiB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>components-7CdcbHJ9.css</td>
+<td>671.0</td>
+<td>78.5</td>
+</tr>
+<tr>
+<td>components-DpRbI6sD.js</td>
+<td>268.3</td>
+<td>73.5</td>
+</tr>
+<tr>
+<td>react.js</td>
+<td>207.3</td>
+<td>65.4</td>
+</tr>
+</tbody>
+</table>
+<p>Third-party React components hydrate an explicit Rust-rendered HTML fallback,
+then mount their interactive version in the browser. Native HTML elements use
+real React hydration over the Rust SSR output. No claim of arbitrary third-party
+React SSR, React Server Components or full Reflex wrapper parity is made.</p>
+<h3>Environment, provenance and reproduction</h3>
+<ul>
+<li>CPU: AMD EPYC 9V74 80-Core Processor; cgroup quota <code>800000 100000</code>.</li>
+<li>Python 3.12.14, Node v24.19.0,
+Rust <code>rustc 1.97.0 (2d8144b78 2026-07-07)</code>, Chromium 133.0.6943.0.</li>
+<li>Headless Linux, 1280×900, loopback frontend/backend, no CPU/network throttling.</li>
+<li>Nano React 19.2.8; Reflex React 19.2.8.
+The frameworks retain their pinned frontend dependencies and different native
+plan/transport implementations. React mode narrows the renderer difference;
+it does not isolate Rust as the only experimental variable.</li>
+<li>Nano uses in-memory Rust sessions and native WebSockets; Reflex uses its
+in-memory Python state manager and Socket.IO WebSockets. Distributed state,
+TLS, remote latency and production deployment behavior are outside this test.</li>
+<li>Source and binary hashes are in <code>benchmarks/lifecycle/react-results.json</code>.
+All recorded hashes are verified by this report generator. The per-navigation
+data is also flattened to <code>react-summary.csv</code>.</li>
+</ul>
+<pre><code class="language-bash">python benchmarks/build_engine.py
+python benchmarks/verify_release.py
+NANO_CHROMIUM_PATH=/path/to/chromium python benchmarks/lifecycle/run.py \
+  --rows 100 1000 10000 --build-runs 3 --server-runs 3 --contexts 2 \
+  --frameworks nano nano_react nano_react_python reflex --output react-results.json
+python benchmarks/lifecycle/react_report.py
+</code></pre>
+<p>Install the pinned benchmark Python/frontend dependencies first as described in
+the existing lifecycle guide. The 0.3 lifecycle and backend results remain
+historical reports; they have not been relabeled as 0.4 measurements.</p>
+<h2>WebSocket performance — Reflex Nano 0.4 — fresh run</h2>
+<p>Experiment date: 2026-09-15. These are <strong>measured backend event-delivery results</strong> on one machine, not projected Rust speedups.</p>
+<p>Nano’s authoritative state, event programs, computed expressions and scheduling are Rust implementations. The Python-hosted case only enters PyO3 to construct/start that same native runtime. The standalone case does not load Python.</p>
+<h3>One connected client</h3>
+<p>Median event-to-observed-state latency in milliseconds. Each value is the median of five independent process-run medians. Smaller is better.</p>
+<table>
+<thead>
+<tr>
+<th>Rows</th>
+<th>Operation</th>
+<th>Nano Rust</th>
+<th>Nano PyO3</th>
+<th>Reflex</th>
+<th>Reflex / Nano latency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>increment</td>
+<td>0.084</td>
+<td>0.098</td>
+<td>0.451</td>
+<td>5.40x</td>
+</tr>
+<tr>
+<td>0</td>
+<td>increment_async</td>
+<td>0.114</td>
+<td>0.131</td>
+<td>0.471</td>
+<td>4.14x</td>
+</tr>
+<tr>
+<td>100</td>
+<td>increment</td>
+<td>0.091</td>
+<td>0.085</td>
+<td>0.426</td>
+<td>4.68x</td>
+</tr>
+<tr>
+<td>100</td>
+<td>increment_async</td>
+<td>0.112</td>
+<td>0.111</td>
+<td>0.459</td>
+<td>4.09x</td>
+</tr>
+<tr>
+<td>100</td>
+<td>toggle</td>
+<td>0.223</td>
+<td>0.192</td>
+<td>0.869</td>
+<td>3.89x</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>increment</td>
+<td>0.099</td>
+<td>0.088</td>
+<td>0.478</td>
+<td>4.81x</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>increment_async</td>
+<td>0.114</td>
+<td>0.126</td>
+<td>0.411</td>
+<td>3.61x</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>toggle</td>
+<td>0.866</td>
+<td>0.900</td>
+<td>4.325</td>
+<td>4.99x</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>increment</td>
+<td>0.092</td>
+<td>0.120</td>
+<td>0.402</td>
+<td>4.37x</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>increment_async</td>
+<td>0.116</td>
+<td>0.117</td>
+<td>0.471</td>
+<td>4.06x</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>toggle</td>
+<td>8.072</td>
+<td>8.833</td>
+<td>38.534</td>
+<td>4.77x</td>
+</tr>
+</tbody>
+</table>
+<p>Ratios divide Reflex latency by Nano latency. For example, a ratio of 3 means one-third the latency in this workload.</p>
+<h3>Eight concurrent clients</h3>
+<p>Aggregate completed events per second, median across five runs. Higher is better. Each client sends its next event after observing the expected state; Nano also waits for its receipt before the next iteration.</p>
+<table>
+<thead>
+<tr>
+<th>Rows</th>
+<th>Operation</th>
+<th>Nano Rust</th>
+<th>Nano PyO3</th>
+<th>Reflex</th>
+<th>Nano / Reflex throughput</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>increment</td>
+<td>17,502</td>
+<td>17,108</td>
+<td>2,955</td>
+<td>5.92x</td>
+</tr>
+<tr>
+<td>0</td>
+<td>increment_async</td>
+<td>18,078</td>
+<td>15,761</td>
+<td>3,064</td>
+<td>5.90x</td>
+</tr>
+<tr>
+<td>100</td>
+<td>increment</td>
+<td>16,500</td>
+<td>18,630</td>
+<td>3,141</td>
+<td>5.25x</td>
+</tr>
+<tr>
+<td>100</td>
+<td>increment_async</td>
+<td>15,447</td>
+<td>17,169</td>
+<td>3,050</td>
+<td>5.06x</td>
+</tr>
+<tr>
+<td>100</td>
+<td>toggle</td>
+<td>9,342</td>
+<td>9,159</td>
+<td>1,343</td>
+<td>6.95x</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>increment</td>
+<td>14,175</td>
+<td>16,472</td>
+<td>2,948</td>
+<td>4.81x</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>increment_async</td>
+<td>16,644</td>
+<td>14,731</td>
+<td>3,204</td>
+<td>5.19x</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>toggle</td>
+<td>1,667</td>
+<td>1,648</td>
+<td>259</td>
+<td>6.44x</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>increment</td>
+<td>13,958</td>
+<td>12,018</td>
+<td>2,974</td>
+<td>4.69x</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>increment_async</td>
+<td>13,702</td>
+<td>12,694</td>
+<td>3,221</td>
+<td>4.25x</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>toggle</td>
+<td>197</td>
+<td>204</td>
+<td>30</td>
+<td>6.56x</td>
+</tr>
+</tbody>
+</table>
+<h3>Tail latency with 1,000 and 10,000 rows</h3>
+<p>Median of per-run p95 latencies, milliseconds. These are not pooled percentiles or production service-level guarantees.</p>
+<table>
+<thead>
+<tr>
+<th>Rows</th>
+<th>Operation</th>
+<th>Clients</th>
+<th>Nano Rust</th>
+<th>Nano PyO3</th>
+<th>Reflex</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1,000</td>
+<td>increment</td>
+<td>1</td>
+<td>0.218</td>
+<td>0.138</td>
+<td>0.761</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>increment</td>
+<td>8</td>
+<td>0.671</td>
+<td>0.640</td>
+<td>3.918</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>increment_async</td>
+<td>1</td>
+<td>0.219</td>
+<td>0.213</td>
+<td>0.599</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>increment_async</td>
+<td>8</td>
+<td>0.684</td>
+<td>0.661</td>
+<td>3.767</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>toggle</td>
+<td>1</td>
+<td>1.167</td>
+<td>1.444</td>
+<td>5.864</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>toggle</td>
+<td>8</td>
+<td>6.770</td>
+<td>6.100</td>
+<td>44.790</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>increment</td>
+<td>1</td>
+<td>0.180</td>
+<td>0.234</td>
+<td>0.526</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>increment</td>
+<td>8</td>
+<td>0.676</td>
+<td>0.851</td>
+<td>3.934</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>increment_async</td>
+<td>1</td>
+<td>0.204</td>
+<td>0.214</td>
+<td>0.675</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>increment_async</td>
+<td>8</td>
+<td>0.682</td>
+<td>0.673</td>
+<td>3.336</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>toggle</td>
+<td>1</td>
+<td>11.131</td>
+<td>13.973</td>
+<td>42.133</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>toggle</td>
+<td>8</td>
+<td>47.758</td>
+<td>48.072</td>
+<td>293.176</td>
+</tr>
+</tbody>
+</table>
+<h3>Method</h3>
+<ul>
+<li>330 workload groups, <strong>148,500 measured events</strong>, 20 warm-up events per client per group, and 100 measured events per client. The 1,000-row list is approximately 42 KiB as compact JSON; the exact payload depends on values and protocol framing.</li>
+<li>Five process runs per framework and state size. Framework order is randomized with recorded seed 20260915. Each framework runs alone; concurrent clients within a workload are intentional. The harness schedules workloads sequentially; shared-machine activity and other processes are not isolated or controlled.</li>
+<li>One backend process per case. Nano uses its standard Tokio runtime and blocking worker pool; the Reflex app uses Granian 2.8.3 embedded ASGI with its default single runtime thread and an asyncio Python loop. Both have the same machine CPU allocation. This is not a single-core or equal-thread-count experiment.</li>
+<li>Reflex 0.9.11 runs its actual application, state manager, lifecycle, event processor, middleware, computed tracking, Engine.IO and Socket.IO stack. Its Python page/state definitions are compiled once before serving. A skip-compile environment setting prevents redundant startup compilation. No event dispatch, state manager or transport is mocked.</li>
+<li>Reflex is configured for <strong>in-memory state</strong>, WebSocket transport, no development reload and telemetry disabled. Nano also uses in-memory state. The result does not compare Nano against disk-backed Reflex state.</li>
+<li>The same aiohttp client implementation handles both protocols over loopback WebSockets with compression not requested. The client accounts for the actual Socket.IO/Engine.IO framing in Reflex. The server is a separate process from the load generator.</li>
+<li>Timing begins before serializing/sending an event and ends when the client has decoded and observed the expected changed state and computed fields. Nano’s subsequent ack wait is excluded from the latency metric but included in workload throughput. Connection establishment, hydration and warm-up are untimed.</li>
+<li>Concurrent workers synchronize after warm-up. Throughput uses all measured events divided by the wall-clock span from the earliest measured start to the latest measured finish.</li>
+<li>Every timed workload checks its complete final public state. The shared contract also verifies forms, input, streaming checkpoints, background pushes alongside foreground events, chains, reconnects and session isolation for all three configurations. These extra features are correctness checks, not additional timing workloads.</li>
+<li>The baseline behavior is defined in <code>shared.py</code>; its Rust port is <code>crates/nano-core/src/demo.rs</code>. The two implementations have matching tested behavior, rather than identical source code.</li>
+<li>Raw per-event samples, all five run medians, bytes received/sent, startup metadata, package versions and hashes of measured sources are retained in <code>backend-results.json</code>. <code>backend-summary.csv</code> includes all aggregate metrics.</li>
+</ul>
+<h3>What the result means</h3>
+<p>The Rust implementation removes Python event execution and avoids copying unchanged state collections. Rust stores each field behind a shared pointer and copies a field when it changes. Computed values reuse shared cached outputs; full snapshots and wire deltas serialize borrowed Rust values. This makes the scalar-event path largely insensitive to the untouched list size in these tests.</p>
+<p>Toggling a row still copies and sends its containing list and recomputes the remaining-item count. It therefore scales with collection size. The Python binding host and native executable are in similar performance ranges; differences between their measured runs should not be interpreted as a precise binding overhead, because no Python callback participates in either event path.</p>
+<h3>Limits</h3>
+<p>These ratios include differences in implementation, state layout, schedulers, server stacks, protocol framing and the remaining framework work. They do not isolate the Rust language as a causal factor. In particular, the Reflex state hierarchy, routing metadata, proxies and ecosystem support are more extensive; see <a href="PARITY.md">PARITY.md</a>.</p>
+<p>This measures warmed backend event delivery. It excludes React/browser rendering, page compilation/builds, startup, initial synchronization, TLS, remote latency, database work, uploads and application-specific computation. It does not establish a whole-application speedup or complete Reflex feature parity.</p>
+<p>Runs are short and use a shared execution environment. The Python load generator, OS scheduling, allocator effects and machine noise can limit throughput or move microsecond-scale medians. Five repetitions provide observed variation, not a universal performance guarantee. Raw per-run medians are included so that variation is visible.</p>
+<h3>Environment</h3>
+<ul>
+<li>CPU: AMD EPYC 9V74 80-Core Processor.</li>
+<li>CPU affinity exposes 9 logical IDs; cgroup quota/period: <code>800000 100000</code> (8 CPU equivalents).</li>
+<li>rustc 1.97.0 (2d8144b78 2026-07-07); Python 3.12.14.</li>
+<li>Linux-6.18.44-x86_64-with-glibc2.39.</li>
+<li>Exact package versions and source hashes are in the raw results.</li>
+</ul>
+<h2>Fresh repeated browser updates</h2>
+<p>Three processes per size/configuration, 50 scalar updates and 20 last-row toggles per page.
+The complete DOM and computed result is verified after each event. Values are milliseconds,
+medians of per-run medians. This includes transport, backend work and browser reconciliation.</p>
+<table>
+<thead>
+<tr>
+<th>Rows</th>
+<th>Update</th>
+<th>Nano HTML / Rust</th>
+<th>Nano HTML / PyO3</th>
+<th>Nano React / Rust</th>
+<th>Nano React / PyO3</th>
+<th>Reflex</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100</td>
+<td>scalar</td>
+<td>0.60</td>
+<td>0.50</td>
+<td>0.75</td>
+<td>0.70</td>
+<td>1.55</td>
+</tr>
+<tr>
+<td>100</td>
+<td>toggle</td>
+<td>0.90</td>
+<td>0.90</td>
+<td>1.90</td>
+<td>1.80</td>
+<td>1.90</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>scalar</td>
+<td>0.50</td>
+<td>0.40</td>
+<td>0.80</td>
+<td>0.70</td>
+<td>3.50</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>toggle</td>
+<td>3.25</td>
+<td>3.10</td>
+<td>11.40</td>
+<td>11.10</td>
+<td>8.45</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>scalar</td>
+<td>0.60</td>
+<td>0.50</td>
+<td>14.75</td>
+<td>14.85</td>
+<td>41.50</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>toggle</td>
+<td>37.80</td>
+<td>39.25</td>
+<td>92.55</td>
+<td>92.65</td>
+<td>75.70</td>
+</tr>
+</tbody>
+</table>
+<p>At 1,000 rows Nano React/Rust takes <strong>11.4 ms</strong> for a row toggle versus Reflex's <strong>8.45 ms</strong>.
+At 10,000 rows it takes <strong>92.55 ms</strong> versus <strong>75.7 ms</strong>; direct HTML takes <strong>37.8 ms</strong>.
+Nano React's scalar path is faster, but its generic component-plan adapter is not a consistent
+winner for list mutations. Profiling is needed to attribute the regression precisely.</p>
+<p>The memory sweep forces GC before these repetitions. These samples are kept separate from
+the original first-event/lifecycle timings. Per-run p95 values are in browser-summary.csv;
+all individual durations are in browser-results.json. These short tests do not establish an SLO.</p>
+<h2>Server memory and retained JavaScript heap</h2>
+<p>Three fresh processes per cell, one connected page. Server RSS/PSS comes from Linux
+smaps_rollup after resolving the PID namespace. PSS apportions shared pages; RSS counts shared
+pages in full. The Reflex process includes its production static and backend servers.</p>
+<p>V8 heap is sampled after forced garbage collection with CDP. The first sample follows full
+hydration and one counter event; the second follows the 50 scalar and 20 list updates.
+<strong>These are retained JavaScript bytes, not total browser RAM or peak memory.</strong> Native DOM/layout,
+GPU memory and other browser processes are excluded. This is not a leak or capacity test.</p>
+<p>All values below are MiB, medians across three runs.</p>
+<table>
+<thead>
+<tr>
+<th>Rows</th>
+<th>Configuration</th>
+<th>Server PSS</th>
+<th>Server RSS</th>
+<th>V8 after hydrate/event</th>
+<th>V8 after updates</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100</td>
+<td>Nano HTML / Rust</td>
+<td>4.06</td>
+<td>4.84</td>
+<td>1.39</td>
+<td>1.48</td>
+</tr>
+<tr>
+<td>100</td>
+<td>Nano HTML / PyO3</td>
+<td>11.18</td>
+<td>13.48</td>
+<td>1.39</td>
+<td>1.48</td>
+</tr>
+<tr>
+<td>100</td>
+<td>Nano React / Rust</td>
+<td>5.50</td>
+<td>6.28</td>
+<td>2.35</td>
+<td>2.84</td>
+</tr>
+<tr>
+<td>100</td>
+<td>Nano React / PyO3</td>
+<td>12.11</td>
+<td>14.41</td>
+<td>2.34</td>
+<td>2.83</td>
+</tr>
+<tr>
+<td>100</td>
+<td>Reflex</td>
+<td>63.52</td>
+<td>66.72</td>
+<td>3.07</td>
+<td>3.35</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>Nano HTML / Rust</td>
+<td>6.27</td>
+<td>7.04</td>
+<td>2.61</td>
+<td>2.71</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>Nano HTML / PyO3</td>
+<td>13.99</td>
+<td>16.29</td>
+<td>2.61</td>
+<td>2.71</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>Nano React / Rust</td>
+<td>8.10</td>
+<td>8.88</td>
+<td>5.36</td>
+<td>6.87</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>Nano React / PyO3</td>
+<td>15.41</td>
+<td>17.70</td>
+<td>5.36</td>
+<td>6.87</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>Reflex</td>
+<td>64.37</td>
+<td>67.57</td>
+<td>4.91</td>
+<td>5.16</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>Nano HTML / Rust</td>
+<td>28.23</td>
+<td>29.00</td>
+<td>13.59</td>
+<td>13.69</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>Nano HTML / PyO3</td>
+<td>43.31</td>
+<td>45.61</td>
+<td>13.59</td>
+<td>13.69</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>Nano React / Rust</td>
+<td>30.66</td>
+<td>31.44</td>
+<td>35.02</td>
+<td>46.52</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>Nano React / PyO3</td>
+<td>44.62</td>
+<td>46.92</td>
+<td>35.01</td>
+<td>46.67</td>
+</tr>
+<tr>
+<td>10,000</td>
+<td>Reflex</td>
+<td>74.01</td>
+<td>77.22</td>
+<td>22.96</td>
+<td>23.43</td>
+</tr>
+</tbody>
+</table>
+<p>Nano's server footprint is much smaller, especially without Python. However, at 10,000 rows,
+Nano React retains <strong>35.0 MiB</strong> of JavaScript heap versus Reflex's <strong>23.0 MiB</strong>.
+Direct HTML retains <strong>13.6 MiB</strong>. Python mainly changes host startup/footprint;
+it does not execute the application event handlers.</p>
+<h2>Fresh-run validation</h2>
+<p>All 330 backend groups, 148,500 events and twelve 11-check live contracts passed.
+All 90 extra browser navigations passed, adding 2,250 repeated scalar updates and 900 timed
+row toggles. No recorded page errors or recoverable React hydration errors occurred.
+Failed setup/smoke attempts were excluded; a PID-namespace lookup fix was required
+in the memory collector, with no change to the application runtime.</p>
+<p>Python 3.12.14, AMD EPYC 9V74 80-Core Processor,
+Linux-6.18.44-x86_64-with-glibc2.39, CPU quota 800000 100000.
+Chromium 133.0.6943.0, 1280x900, loopback, no artificial CPU/network throttling.
+These are five-process backend and three-process browser/memory experiments in a shared environment.</p>
+<p>The immutable source release and its original source hashes were verified against the archive.
+All new measured scripts, relevant sources, binaries and wheels were also hash-checked.
+The report validates every expected sample count and recorded correctness condition.
+The bundle includes the original release, raw JSON/CSV and reproduction scripts; see README.md.</p>
+<h2>Feature coverage and semantics</h2>
+<p>The Reflex column describes framework capabilities, not features all enabled in the timed fixture. Authentication and database workloads were not benchmarked.</p>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Nano HTML</th>
+<th>Nano React</th>
+<th>Reflex</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Authoritative state and event execution</td>
+<td>Rust</td>
+<td>Rust</td>
+<td>Python</td>
+</tr>
+<tr>
+<td>Definition API</td>
+<td>Native Rust; PyO3 constructs native objects</td>
+<td>Same</td>
+<td>Python classes/decorators</td>
+</tr>
+<tr>
+<td>Arbitrary application handlers</td>
+<td>Native Rust; bounded programs through bindings</td>
+<td>Same</td>
+<td>Python sync/async functions and libraries</td>
+</tr>
+<tr>
+<td>Unchanged Reflex source</td>
+<td>Not compatible</td>
+<td>Not compatible</td>
+<td>Native</td>
+</tr>
+<tr>
+<td>Browser renderer</td>
+<td>Direct DOM JavaScript</td>
+<td>React 19 / ReactDOM</td>
+<td>React 19 / ReactDOM</td>
+</tr>
+<tr>
+<td>Native HTML SSR/hydration</td>
+<td>Rust SSR + DOM adoption</td>
+<td>Rust SSR + hydrateRoot</td>
+<td>React prerendering/hydration in measured build</td>
+</tr>
+<tr>
+<td>Third-party component SSR</td>
+<td>Explicit HTML fallback</td>
+<td>Fallback then browser mount</td>
+<td>SSR-capable wrappers; NoSSR where needed</td>
+</tr>
+<tr>
+<td>Radix, React hooks, portals</td>
+<td>Fallback only</td>
+<td>Registered components, tested</td>
+<td>Broader component/wrapper ecosystem</td>
+</tr>
+<tr>
+<td>Add React package</td>
+<td>Needs HTML fallback</td>
+<td>Registry + frontend and Rust rebuild</td>
+<td>Python wrapper + frontend build</td>
+</tr>
+<tr>
+<td>Controlled forms and keyed lists</td>
+<td>Tested</td>
+<td>Tested</td>
+<td>Supported</td>
+</tr>
+<tr>
+<td>Computed caching</td>
+<td>Native dependency expressions</td>
+<td>Same</td>
+<td>Computed vars/dependency tracking</td>
+</tr>
+<tr>
+<td>Debounce/throttle/temporal/propagation</td>
+<td>Tested</td>
+<td>Tested</td>
+<td>Supported event actions</td>
+</tr>
+<tr>
+<td>Streaming/background/chaining</td>
+<td>Native checkpoints and Tokio; bounded program semantics</td>
+<td>Same</td>
+<td>Python generators/async/background handlers</td>
+</tr>
+<tr>
+<td>State inheritance and substates</td>
+<td>Missing</td>
+<td>Missing</td>
+<td>Supported</td>
+</tr>
+<tr>
+<td>Static/dynamic routes and history</td>
+<td>Tested</td>
+<td>Tested</td>
+<td>Supported</td>
+</tr>
+<tr>
+<td>Full on_load lifecycle</td>
+<td>Missing</td>
+<td>Missing</td>
+<td>Supported</td>
+</tr>
+<tr>
+<td>Cross-tab session semantics</td>
+<td>Cookie-shared state</td>
+<td>Cookie-shared state</td>
+<td>Normally per-tab tokens</td>
+</tr>
+<tr>
+<td>Event protocol</td>
+<td>nano.v1 WebSocket</td>
+<td>Same</td>
+<td>Socket.IO/Engine.IO; WebSocket in this test</td>
+</tr>
+<tr>
+<td>File uploads</td>
+<td>Missing</td>
+<td>Missing</td>
+<td>Supported</td>
+</tr>
+<tr>
+<td>Cookie/local-storage state vars</td>
+<td>Missing; session cookie is separate</td>
+<td>Same</td>
+<td>Supported</td>
+</tr>
+<tr>
+<td>ORM integration</td>
+<td>No framework integration</td>
+<td>Same</td>
+<td>Database integration available</td>
+</tr>
+<tr>
+<td>OIDC authentication helpers</td>
+<td>No framework integration</td>
+<td>Same</td>
+<td>Enterprise AuthPlugin, separate package</td>
+</tr>
+<tr>
+<td>Redis/distributed state manager</td>
+<td>Missing</td>
+<td>Missing</td>
+<td>Available; benchmark used memory</td>
+</tr>
+<tr>
+<td>Restart persistence</td>
+<td>In-memory state is lost</td>
+<td>Same</td>
+<td>Depends on state manager/deployment</td>
+</tr>
+<tr>
+<td>Development HMR</td>
+<td>No complete watcher/HMR workflow</td>
+<td>Same</td>
+<td>Development tooling available; not timed</td>
+</tr>
+<tr>
+<td>Deployment</td>
+<td>Native executable or wheel</td>
+<td>Same, with embedded frontend</td>
+<td>CLI/hosting/container workflows</td>
+</tr>
+<tr>
+<td>Durable exactly-once events</td>
+<td>No; bounded 256-receipt cache</td>
+<td>Same</td>
+<td>Not established by this comparison</td>
+</tr>
+</tbody>
+</table>
+<p>Reflex supports <a href="https://reflex.dev/docs/wrapping-react/overview/">wrapping React components</a>, <a href="https://reflex.dev/docs/library/forms/upload/">file uploads</a>, <a href="https://reflex.dev/docs/database/overview/">database integration</a>, <a href="https://reflex.dev/docs/client-storage/overview/">client storage</a> and <a href="https://reflex.dev/docs/events/page-load-events/">page-load events</a>. <a href="https://reflex.dev/docs/enterprise/auth/overview/">OIDC authentication</a> is an Enterprise capability requiring an additional package; it was not enabled in these measurements.</p>
+<p>Nano's Radix integration is real, including composed refs/handlers and portal callbacks. It is not an unchanged generated Reflex frontend. Imported components hydrate explicit Rust-rendered HTML fallbacks and then mount their interactive React version. Rust does not execute arbitrary third-party JavaScript SSR. A single feature-parity percentage would hide these differences.</p>
+<h2>Optimization coverage and remaining measurements</h2>
+<p>Nano includes shared native state fields, transactional writes, dependency-cached computed expressions, constant folding, reusable compiled render plans, SSR DOM reuse, stable keys, subtree dependency skipping, early-input preservation, queued events, gzip/immutable assets and lazy React component bundles. Equal row values are shared in the browser so unrelated scalar events can skip list subtrees.</p>
+<p>Collection mutations still copy and transmit their containing field, and list comparison remains proportional to its size. There are no nested wire patches or list virtualization. The full 10,000-row state remains roughly 437.5 KiB. Backend gains cannot simply be multiplied into page-load gains: parsing, DOM size, React work and full state delivery remain. This is an architectural interpretation, not a measured CPU breakdown.</p>
+<p>The current results do not establish every Reflex compiler optimization in Rust. They also do not establish source-edit HMR speed, custom Rust application incremental builds, production CPU cost per request, total/peak browser RAM, long-running leaks, maximum connected users, multi-worker or Redis operation, persistence recovery, TLS/WAN/mobile-network behavior, database/auth/upload performance, accessibility conformance or independent security certification. Paint-ready and detailed resource timing are retained in the lifecycle data; LCP and INP are not established.</p>
+<p>Direct HTML is the stronger measured performance option for the native-node fixture. Nano React adds useful interoperability but has measurable browser regressions on list-heavy work. Reflex provides the broader application framework. The evidence supports these specific tradeoffs, not complete compatibility at universally higher speed.</p>
+</main></html>
