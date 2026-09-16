@@ -12,6 +12,14 @@ This repository contains Nano **0.4.0** and its comparison against
 **Reflex 0.9.11**. It implements a tested set of basic Reflex behaviors, with
 documented compatibility gaps. It is not a drop-in replacement for Reflex.
 
+**Upload status:** Rust and Python source, both frontend implementations,
+generated React assets, examples, tests, build configuration, benchmark harnesses,
+reports and CSV summaries are present. Large raw benchmark JSON files, some
+generated benchmark fixtures, prebuilt executables/wheels, screenshots and the
+original release ZIP have not been uploaded. Build from source using the commands
+below. Reproducing the historical report also requires the full comparison
+archive supplied with the original experiment.
+
 ## Start here
 
 - [Framework documentation and examples](reflex-nano/README.md)
@@ -52,8 +60,9 @@ execution in Rust.
 
 The full comparison contains 148,500 fresh backend event measurements, 90
 additional browser navigations for memory and repeated updates, and the earlier
-144-navigation lifecycle experiment. Raw JSON, CSV summaries, harnesses, source
-hashes and methodological limitations are included.
+144-navigation lifecycle experiment. CSV summaries, harnesses, source hashes and
+methodological limitations are included. The full raw datasets remain in the
+original comparison archive; see the upload status above.
 
 The tested Rust backend delivered roughly 4.7–6.6 times the throughput of the
 tested Reflex backend in the selected 1,000/10,000-row, eight-client workloads.
@@ -68,18 +77,18 @@ not a universal speedup or an isolated measurement of language overhead.
 | --- | --- |
 | `reflex-nano/` | Rust workspace, PyO3 bindings, frontend, examples, tests and historical benchmarks |
 | `reflex-nano-comparison/` | Current-version comparison report, raw data and reproduction harnesses |
-| `recovered/reflex-nano-0.4.0.zip` | Immutable release archive used to verify benchmark provenance |
 
 The sibling directory layout preserves the benchmark scripts and their recorded
-hashes. The release is already extracted; skip the initial `unzip` command in
-the comparison reproduction instructions. The native Linux executable and
-CPython 3.12 Linux wheel are retained as measured artifacts, along with historical
-baseline executables. Dependencies, virtual environments and build caches are
-not included.
+hashes. Historical reproduction instructions describe the complete experiment
+archive, including its prebuilt artifacts. This GitHub checkout currently contains
+the source portion and reports; the prebuilt-artifact commands in the original
+framework guide require that archive. Dependencies, virtual environments and
+build caches are not included.
 
 The root `SHA256SUMS` verifies the original comparison package; the nested
 framework `SHA256SUMS` verifies the original release. They are historical
-manifests and do not cover this repository overview.
+manifests: some referenced artifacts are not uploaded, and they do not cover this
+repository overview.
 
 Licensed under the [MIT license](LICENSE). Bundled frontend dependency notices
 are preserved in `reflex-nano/crates/nano-core/frontend-dist/.vite/license.md`.
